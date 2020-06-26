@@ -17,7 +17,7 @@ union Data {
 };
 
 union Address {
-    int i;
+    unsigned long i;
     uint8_t u[2];
 };
 
@@ -37,12 +37,10 @@ enum Local
 class DataSave
 {
 private:
-    void WriteByte(uint8_t deviceaddress, int address, uint8_t data);
-    void WritePage(uint8_t deviceaddress, int eeaddr,
-                   const uint8_t *data, uint8_t length);
-    uint8_t ReadByte(uint8_t deviceaddress, int address);
-    void ReadPage(uint8_t deviceaddress, int eeaddr,
-                  const uint8_t *data, uint8_t length);
+    void WriteByte(int address, uint8_t data);
+    void WritePage(int eeaddr, uint8_t *data, uint8_t length);
+    uint8_t ReadByte(int address);
+    void ReadPage(int eeaddr, uint8_t *data, uint8_t length);
 
 public:
     DataSave();

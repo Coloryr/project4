@@ -8,6 +8,7 @@
 
 extern class ULCD LCD;
 extern class DataSave Save;
+extern class Key KeyBoard;
 
 extern VI VaI;
 extern Now NowData;

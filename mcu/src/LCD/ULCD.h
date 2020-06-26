@@ -3,11 +3,7 @@
 
 #include <Arduino.h>
 #include <DataS.h>
-
-enum KeyDown
-{
-
-};
+#include <Key/Key.h>
 
 typedef struct OnSet
 {
@@ -22,6 +18,7 @@ class ULCD
 private:
     OnSet NowSet;
 public:
+    KeyDown NowKeyDown;
     ULCD();
     void begin();
     void SetPage(uint8_t page);
