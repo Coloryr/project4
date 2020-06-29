@@ -63,7 +63,7 @@ private:
     KeyDown NowKeyDown;
 public:
     Key();
-    void KeyTick();
+    void Tick();
     KeyDown GetKey();
     void KeyClear();
     void KeyDo(KeyDown key);

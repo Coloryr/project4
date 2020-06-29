@@ -33,9 +33,11 @@ Key::Key()
     digitalWrite(KB, HIGH);
     digitalWrite(KC, HIGH);
     digitalWrite(KD, HIGH);
+
+    NowKeyDown = NullKey;
 }
 
-void Key::KeyTick()
+void Key::Tick()
 {
     static portTickType xLastWakeTime;
     const portTickType xFrequency = pdMS_TO_TICKS(10);

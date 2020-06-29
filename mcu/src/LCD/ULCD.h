@@ -16,15 +16,18 @@ typedef struct OnSet
 class ULCD
 {
 private:
-    OnSet NowSet;
-public:
+    char* buff;
     KeyDown NowKeyDown;
+public:
+    OnSet NowSet;
     ULCD();
+    void clear();
     void begin();
     void SetPage(uint8_t page);
     void UpDate(VI vi);
     KeyDown GetKeyDown();
     void SetIn(OnSet data);
+    void Tick();
 };
 
 #endif
