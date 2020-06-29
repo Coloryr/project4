@@ -29,6 +29,7 @@ enum KeyDown
     Number8,
     Number9,
     Number0,
+    Point,
     //编码轮 左右中
     Last,
     Next,
@@ -47,11 +48,12 @@ enum KeyDown
     Menu1,
     Menu2,
     Menu3,
-    //清空，退格，返回，确认
+    //清空，退格，返回，确认，保存
     Clear,
     Backspace,
     Back,
     Confirm,
+    SaveKey,
     NullKey
 };
 

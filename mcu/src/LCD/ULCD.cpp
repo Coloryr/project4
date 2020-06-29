@@ -17,6 +17,7 @@ void ULCD::SetPage(uint8_t page)
 }
 void ULCD::UpDate(VI vi)
 {
+    
 }
 KeyDown ULCD::GetKeyDown()
 {

@@ -2,7 +2,8 @@
 #include <FreeRTOS.h>
 #include <task.h>
 #include <ALL.h>
-#include <Tasks/ADTask.h>
+#include <Tasks/TickTask.h>
+#include <Tasks/ADCTask.h>
 #include <Tasks/LCDTask.h>
 
 VI VaI;
@@ -19,7 +20,14 @@ void TaskStart()
         NULL);
 
     xTaskCreate(
-        TaskAD, (const portCHAR *)"AD",
+        TaskADC, (const portCHAR *)"ADC",
+        128,
+        NULL,
+        2,
+        NULL);
+
+    xTaskCreate(
+        TaskADC, (const portCHAR *)"Tick",
         128,
         NULL,
         2,
@@ -30,6 +38,7 @@ void setup()
 {
     Serial.begin(112500);
     LCD.begin();
+    Save.begin();
 }
 
 void loop()

@@ -87,6 +87,52 @@ void Key::KeyTick()
         NowKeyDown = Clear;
         return;
     }
+    digitalWrite(KB, HIGH);
+    digitalWrite(KC, LOW);
+    vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    if (digitalRead(K1) == LOW)
+    {
+        NowKeyDown = Number7;
+        return;
+    }
+    else if (digitalRead(K2) == LOW)
+    {
+        NowKeyDown = Number8;
+        return;
+    }
+    else if (digitalRead(K3) == LOW)
+    {
+        NowKeyDown = Number9;
+        return;
+    }
+    else if (digitalRead(K4) == LOW)
+    {
+        NowKeyDown = SaveKey;
+        return;
+    }
+    digitalWrite(KC, HIGH);
+    digitalWrite(KD, LOW);
+    vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    if (digitalRead(K1) == LOW)
+    {
+        NowKeyDown = Point;
+        return;
+    }
+    else if (digitalRead(K2) == LOW)
+    {
+        NowKeyDown = Number0;
+        return;
+    }
+    else if (digitalRead(K3) == LOW)
+    {
+        NowKeyDown = Confirm;
+        return;
+    }
+    else if (digitalRead(K4) == LOW)
+    {
+        NowKeyDown = Back;
+        return;
+    }
 }
 
 KeyDown Key::GetKey()

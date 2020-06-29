@@ -1,7 +1,7 @@
 #include <Arduino.h>
-#include <Tasks/ADTask.h>
+#include <Tasks/ADCTask.h>
 
-void TaskAD(void *pvParameters)
+void TaskADC(void *pvParameters)
 {
     (void)pvParameters;
     for(;;)
