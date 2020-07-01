@@ -1,23 +1,15 @@
 #ifndef _ULCD_
 #define _ULCD_
 
-#include <Arduino.h>
 #include <DataS.h>
 #include <Key/Key.h>
-
-typedef struct OnSet
-{
-    bool mode;
-    uint8_t PointLocal;
-    uint8_t StringLength;
-    float Val;
-};
 
 class ULCD
 {
 private:
-    char* buff;
+    char buff[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     KeyDown NowKeyDown;
+
 public:
     OnSet NowSet;
     ULCD();
@@ -29,5 +21,7 @@ public:
     void SetIn(OnSet data);
     void Tick();
 };
+ 
+extern class ULCD LCD;
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef LCDTASK_H
-#define LCDTASK_H
+#ifndef _LCDTASK_
+#define _LCDTASK_
 
 void TaskLCD(void *pvParameters);
 

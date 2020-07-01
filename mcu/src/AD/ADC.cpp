@@ -1,9 +1,22 @@
 #include <Arduino.h>
 #include <AD/ADC.h>
-#include <ALL.h>
+#include <DataS.h>
+#include <IO.h>
 
-ADC ADADC;
+ADC AD_ADC;
 
 ADC::ADC()
+{
+}
+
+void ADC::begin()
+{
+    pinMode(ADC_MISO, INPUT);
+}
+
+void ADC::getV(float *data)
+{
+}
+void ADC::getI(float *data)
 {
 }

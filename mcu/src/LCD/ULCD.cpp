@@ -1,5 +1,6 @@
+#include <Arduino.h>
 #include <LCD/ULCD.h>
-#include <ALL.h>
+#include <IO.h>
 
 ULCD LCD;
 
@@ -9,9 +10,7 @@ ULCD::ULCD()
 
 void ULCD::begin()
 {
-    Serial1.begin(112500, 10, 11);
-    buff = (char *)malloc(10 * sizeof(char));
-    NowData.page = 0;
+    Serial1.begin(112500, LCD1, LCD2);
     NowKeyDown = NullKey;
 }
 
@@ -21,8 +20,7 @@ void ULCD::SetPage(uint8_t page)
 }
 void ULCD::UpDate(VI vi)
 {
-    char *a;
-    Serial1.printf("x0.txt=%d.2", vi.SetV);
+    Serial1.printf("x0.txt=%f.2", vi.SetV);
 }
 KeyDown ULCD::GetKeyDown()
 {

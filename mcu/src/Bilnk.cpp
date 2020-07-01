@@ -1,10 +1,12 @@
 #include <Arduino.h>
 #include <FreeRTOS.h>
 #include <task.h>
-#include <ALL.h>
 #include <Tasks/TickTask.h>
 #include <Tasks/ADCTask.h>
 #include <Tasks/LCDTask.h>
+#include <DataS.h>
+#include <LCD/ULCD.h>
+#include <DataSave/Data.h>
 
 VI VaI;
 Now NowData;
@@ -38,7 +40,7 @@ void setup()
 {
     Serial.begin(112500);
     LCD.begin();
-    Save.begin();
+    SaveData.begin();
 }
 
 void loop()

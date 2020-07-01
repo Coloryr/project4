@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <AD/DAC.h>
-#include <ALL.h>
+#include <DataS.h>
 
-DAC ADDAC;
+DAC AD_DAC;
 
 DAC::DAC()
 {

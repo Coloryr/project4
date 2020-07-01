@@ -1,7 +1,9 @@
 #include <Arduino.h>
-#include <ALL.h>
-
 #include <Tasks/TickTask.h>
+#include <LCD/ULCD.h>
+#include <Key/Key.h>
+#include <DataS.h>
+#include <Bilnk.h>
 
 void TaskTick(void *pvParameters)
 {
@@ -39,11 +41,11 @@ void TaskTick(void *pvParameters)
             NowData.mode = LCD.NowSet.mode;
             if(NowData.mode == 0)
             {
-                Serial1.printf("t0.txt=%d.2", VaI.SetV);
+                Serial1.printf("t0.txt=%f.2", VaI.SetV);
             }
             else
             {
-                Serial1.printf("t0.txt=%d.2", VaI.SetI);
+                Serial1.printf("t0.txt=%f.2", VaI.SetI);
             }
         }
         break;
