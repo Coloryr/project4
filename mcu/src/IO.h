@@ -29,4 +29,6 @@
 #define ADC_V_SCK 30
 #define ADC_I_SCK 31
 
+#define BELL 32
+
 #endif

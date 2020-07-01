@@ -41,6 +41,16 @@ void setup()
     Serial.begin(112500);
     LCD.begin();
     SaveData.begin();
+
+    NowData.mode = 0;
+    NowData.error = 0;
+    NowData.open = false;
+    NowData.page = 0;
+
+    SaveData.GetData(&VaI);
+
+    VaI.NowI = 0;
+    VaI.NowV = 0;
 }
 
 void loop()

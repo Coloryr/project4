@@ -108,15 +108,14 @@ void DataSave::GetData(VI *data)
 }
 void DataSave::SetSave(Mode mode, Local local, float data)
 {
+    DataTran tran;
     switch (mode)
     {
     case V:
-        DataTran tran;
         tran.f = data;
         WritePage(0x10 + local, tran.u, 4);
         break;
     case I:
-        DataTran tran;
         tran.f = data;
         WritePage(0x20 + local, tran.u, 4);
         break;
@@ -124,15 +123,14 @@ void DataSave::SetSave(Mode mode, Local local, float data)
 }
 void DataSave::GetSave(Mode mode, Local local, float *data)
 {
+    DataTran tran;
     switch (mode)
     {
     case V:
-        DataTran tran;
         ReadPage(0x10 + local, tran.u, 4);
         data[0] = tran.f;
         break;
     case I:
-        DataTran tran;
         ReadPage(0x20 + local, tran.u, 4);
         data[0] = tran.f;
         break;
@@ -147,7 +145,6 @@ void DataSave::Remove(Mode mode, Local local)
         WritePage(0x10 + local, a, 4);
         break;
     case I:
-        Data tran;
         WritePage(0x20 + local, a, 4);
         break;
     }

@@ -15,7 +15,7 @@ union Address
     uint8_t u[2];
 };
 
-typedef struct VI
+struct VI
 {
     float SetV = 0;
     float SetI = 0;
@@ -23,7 +23,7 @@ typedef struct VI
     float NowI = 0;
 };
 
-typedef struct Now
+struct Now
 {
     uint8_t mode = 0;
     uint8_t page = 0;
@@ -31,7 +31,7 @@ typedef struct Now
     bool open = false;
 };
 
-typedef struct OnSet
+struct OnSet
 {
     bool mode;
     uint8_t PointLocal;
