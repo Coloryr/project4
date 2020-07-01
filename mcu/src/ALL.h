@@ -9,6 +9,8 @@
 extern class ULCD LCD;
 extern class DataSave Save;
 extern class Key KeyBoard;
+extern class DAC ADDAC;
+extern class ADC ADADC;
 
 extern VI VaI;
 extern Now NowData;
