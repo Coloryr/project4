@@ -10,7 +10,7 @@ ULCD::ULCD()
 
 void ULCD::begin()
 {
-    Serial1.begin(112500, LCD1, LCD2);
+    Serial1.begin(115200, LCD1, LCD2);
     NowKeyDown = NullKey;
 }
 

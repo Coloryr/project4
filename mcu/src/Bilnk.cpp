@@ -7,12 +7,26 @@
 #include <DataS.h>
 #include <LCD/ULCD.h>
 #include <DataSave/Data.h>
+#include "gpiohs.h"
+#include "gpio.h"
 
 VI VaI;
 Now NowData;
 
+void TaskHello(void *pvParameters)
+{
+    Serial.printf("hello world");
+}
+
 void TaskStart()
 {
+    xTaskCreate(
+        TaskHello,
+        (const portCHAR *)"Start",
+        128,
+        NULL,
+        2,
+        NULL);
     xTaskCreate(
         TaskLCD,
         (const portCHAR *)"LCD",
@@ -38,7 +52,11 @@ void TaskStart()
 
 void setup()
 {
-    Serial.begin(112500);
+    Serial.begin(115200);
+    fpioa_set_function(0, FUNC_JTAG_TCLK);
+    fpioa_set_function(1, FUNC_JTAG_TDI);
+    fpioa_set_function(2, FUNC_JTAG_TMS);
+    fpioa_set_function(3, FUNC_JTAG_TDO);
     LCD.begin();
     SaveData.begin();
 
@@ -51,6 +69,9 @@ void setup()
 
     VaI.NowI = 0;
     VaI.NowV = 0;
+
+    TaskStart();
+    vTaskStartScheduler();
 }
 
 void loop()
