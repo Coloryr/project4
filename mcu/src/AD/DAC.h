@@ -1,0 +1,17 @@
+#ifndef _DAC_
+#define _DAC_
+
+class DAC
+{
+private:
+    
+public:
+    DAC();
+    void begin();
+    void SetV(float data);
+    void SetI(float data);
+};
+
+extern class DAC AD_DAC;
+
+#endif
