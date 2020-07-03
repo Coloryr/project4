@@ -10,8 +10,8 @@
 #include "gpiohs.h"
 #include "gpio.h"
 
-VI VaI;
-Now NowData;
+VI *VaI;
+Now *NowData;
 
 void TaskHello(void *pvParameters)
 {
@@ -36,42 +36,57 @@ void TaskStart()
         NULL);
 
     xTaskCreate(
-        TaskADC, (const portCHAR *)"ADC",
+        TaskADC,
+        (const portCHAR *)"ADC",
         128,
         NULL,
         2,
         NULL);
 
     xTaskCreate(
-        TaskADC, (const portCHAR *)"Tick",
+        TaskADC,
+        (const portCHAR *)"Tick",
         128,
         NULL,
         2,
         NULL);
 }
 
+void init()
+{
+    VaI = (VI *)malloc(sizeof(VI));
+    NowData = (Now *)malloc(sizeof(Now));
+}
+
 void setup()
 {
     Serial.begin(115200);
-    fpioa_set_function(0, FUNC_JTAG_TCLK);
-    fpioa_set_function(1, FUNC_JTAG_TDI);
-    fpioa_set_function(2, FUNC_JTAG_TMS);
-    fpioa_set_function(3, FUNC_JTAG_TDO);
     LCD.begin();
     SaveData.begin();
+    
 
-    NowData.mode = 0;
-    NowData.error = 0;
-    NowData.open = false;
-    NowData.page = 0;
+    // uint8_t data = 0x56;
+    // Serial.println("write");
+    // SaveData.WriteByte(0x00, data);
 
-    SaveData.GetData(&VaI);
+    // Serial.println("read");
+    // data = 0x00;
+    // data = SaveData.ReadByte(0x00);
 
-    VaI.NowI = 0;
-    VaI.NowV = 0;
+    // init();
 
-    TaskStart();
-    vTaskStartScheduler();
+    // NowData->mode = 0;
+    // NowData->error = 0;
+    // NowData->open = false;
+    // NowData->page = 0;
+
+    // SaveData.GetData(VaI);
+
+    // VaI->NowI = 0;
+    // VaI->NowV = 0;
+
+    // TaskStart();
+    // vTaskStartScheduler();
 }
 
 void loop()

@@ -9,12 +9,6 @@ union DataTran
     uint8_t u[4];
 };
 
-union Address
-{
-    unsigned long i;
-    uint8_t u[2];
-};
-
 struct VI
 {
     float SetV = 0;

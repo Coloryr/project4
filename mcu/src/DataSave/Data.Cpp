@@ -13,63 +13,65 @@ DataSave::DataSave()
 void DataSave::begin()
 {
     Wire.begin(I2C_SDA, I2C_SCL, (uint32_t)500000);
+    Wire.scan();
+
+    volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
+    i2c_adapter->tar = I2C_TAR_ADDRESS(0x50);
+
+    int a = i2c_recv_data(I2C_DEVICE_0, write_buff, 2, read_buff, 32);
+    Serial.printf("tran:%d\n", a);
+
+    for (int i = 0; i < 32; i++)
+    {
+        Serial.printf("%d ", read_buff[i]);
+    }
 }
 
-void DataSave::WriteByte(int address, uint8_t data)
+void DataSave::WriteByte(uint8_t address, uint8_t data)
 {
     volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(ADDRESS | I2C_WR);
+    i2c_adapter->tar = I2C_TAR_ADDRESS(0x50);
 
-    Address addr;
-    addr.i = address;
-    write_buff[0] = addr.u[0];
-    write_buff[1] = addr.u[1];
-    write_buff[2] = data;
-    i2c_send_data(I2C_DEVICE_0, write_buff, 3);
+    write_buff[0] = address;
+    write_buff[1] = data;
+    uint8_t i = i2c_send_data(I2C_DEVICE_0, write_buff, 32);
+    Serial.printf("tran:%d\n", i);
 }
-void DataSave::WritePage(int address, uint8_t *data, uint8_t length)
+void DataSave::WritePage(uint8_t address, uint8_t *data, uint8_t length)
 {
     volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(I2C_SDA);
+    i2c_adapter->tar = I2C_TAR_ADDRESS(0x50);
 
-    Address addr;
-    addr.i = address;
-    uint8_t *a = (uint8_t *)malloc((2 + length) * sizeof(uint8_t));
-    a[0] = addr.u[0];
-    a[1] = addr.u[1];
+    uint8_t *a = (uint8_t *)malloc((1 + length) * sizeof(uint8_t));
+    a[0] = address;
     for (int i = 0; i < length; i++)
     {
         a[i + 2] = data[i];
     }
-    i2c_send_data(I2C_DEVICE_0, a, 2 + length);
+    i2c_send_data(I2C_DEVICE_0, a, 1 + length);
     free(a);
 }
-uint8_t DataSave::ReadByte(int address)
+uint8_t DataSave::ReadByte(uint8_t address)
 {
     volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(0xA1);
+    i2c_adapter->tar = I2C_TAR_ADDRESS(0x50);
 
-    Address addr;
-    addr.i = address;
-    read_buff[0] = addr.u[0];
-    read_buff[1] = addr.u[1];
-
-    uint8_t data = 0;
-
-    i2c_recv_data(I2C_DEVICE_0, read_buff, 2, &data, 1);
-    return data;
+    uint8_t i = i2c_recv_data(I2C_DEVICE_0, &address, 1, read_buff, 64);
+    Serial.printf("tran:%d\n", i);
+    for (int a = 0; a < 128; a++)
+    {
+        Serial.printf("%d ", read_buff[a]);
+    }
+    return 0;
 }
-void DataSave::ReadPage(int address, uint8_t *data, uint8_t length)
+void DataSave::ReadPage(uint8_t address, uint8_t *data, uint8_t length)
 {
     volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(0xA1);
+    i2c_adapter->tar = I2C_TAR_ADDRESS(0x50);
 
-    Address addr;
-    addr.i = address;
-    read_buff[0] = addr.u[0];
-    read_buff[1] = addr.u[1];
+    read_buff[0] = address;
 
-    i2c_recv_data(I2C_DEVICE_0, read_buff, 2, data, length);
+    i2c_recv_data(I2C_DEVICE_0, read_buff, 1, data, length);
 }
 
 void DataSave::SaveData(VI data)

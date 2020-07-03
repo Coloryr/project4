@@ -7,6 +7,7 @@ class Key
 {
 private:
     KeyDown NowKeyDown;
+
 public:
     Key();
     void Tick();

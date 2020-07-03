@@ -4,8 +4,7 @@
 void TaskADC(void *pvParameters)
 {
     (void)pvParameters;
-    for(;;)
+    for (;;)
     {
-        
     }
 }

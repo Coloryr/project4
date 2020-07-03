@@ -3,7 +3,7 @@
 
 #include <DataS.h>
 
-extern VI VaI;
-extern Now NowData;
+extern VI* VaI;
+extern Now* NowData;
 
 #endif

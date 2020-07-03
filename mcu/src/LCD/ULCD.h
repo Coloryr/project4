@@ -21,7 +21,7 @@ public:
     void SetIn(OnSet data);
     void Tick();
 };
- 
+
 extern class ULCD LCD;
 
 #endif
