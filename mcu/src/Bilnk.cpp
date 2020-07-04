@@ -72,7 +72,7 @@ void setup()
 {
     Serial.begin(115200);
     LCD.begin();
-    // SaveData.begin();
+    SaveData.begin();
 
     LCD.SetPage(0);
 
