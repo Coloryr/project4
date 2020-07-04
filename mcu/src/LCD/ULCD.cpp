@@ -16,7 +16,12 @@ void ULCD::begin()
 
 void ULCD::SetPage(uint8_t page)
 {
-    Serial1.printf("page " + (0x30 + page));
+    char data[9] = "page ";
+    data[5] = 0x30 + page;
+    data[6] = 0xff;
+    data[7] = 0xff;
+    data[8] = 0xff;
+    Serial1.write(data);
 }
 void ULCD::UpDate(VI vi)
 {
@@ -49,6 +54,7 @@ void ULCD::Tick()
             break;
         }
     }
+    Serial1.print(buff);
 }
 
 void ULCD::clear()

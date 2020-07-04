@@ -44,7 +44,7 @@ void TaskStart()
         NULL);
 
     xTaskCreate(
-        TaskADC,
+        TaskTick,
         (const portCHAR *)"Tick",
         128,
         NULL,
@@ -56,34 +56,27 @@ void init()
 {
     VaI = (VI *)malloc(sizeof(VI));
     NowData = (Now *)malloc(sizeof(Now));
+
+    NowData->mode = 0;
+    NowData->error = 0;
+    NowData->open = false;
+    NowData->page = 0;
+
+    SaveData.GetData(VaI);
+
+    VaI->NowI = 0;
+    VaI->NowV = 0;
 }
 
 void setup()
 {
     Serial.begin(115200);
     LCD.begin();
-    SaveData.begin();
-    
+    // SaveData.begin();
 
-    // uint8_t data = 0x56;
-    // Serial.println("write");
-    // SaveData.WriteByte(0x00, data);
-
-    // Serial.println("read");
-    // data = 0x00;
-    // data = SaveData.ReadByte(0x00);
+    LCD.SetPage(0);
 
     // init();
-
-    // NowData->mode = 0;
-    // NowData->error = 0;
-    // NowData->open = false;
-    // NowData->page = 0;
-
-    // SaveData.GetData(VaI);
-
-    // VaI->NowI = 0;
-    // VaI->NowV = 0;
 
     // TaskStart();
     // vTaskStartScheduler();

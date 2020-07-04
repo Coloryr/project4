@@ -1,77 +1,226 @@
 #include <DataSave/Data.h>
-#include <Wire.h>
 #include <IO.h>
 #include <DataS.h>
-#include <kendryte-standalone-sdk/lib/drivers/include/i2c.h>
 
 DataSave SaveData;
 
 DataSave::DataSave()
 {
 }
+uint8_t bit = 0;
+uint8_t DataSave::READ_SDA(void)
+{
+    uint8_t data = digitalRead(I2C_SDA);
+    return data;
+}
+
+void DataSave::SDA_OUT(void)
+{
+    pinMode(I2C_SDA, OUTPUT);
+}
+void DataSave::SDA_IN(void)
+{
+    pinMode(I2C_SDA, INPUT_PULLUP);
+}
+
+//产生IIC起始信号
+void DataSave::IIC_Start(void)
+{
+    SDA_OUT(); //sda线输出
+    digitalWrite(I2C_SDA, HIGH);
+    digitalWrite(I2C_SCL, HIGH);
+    delayMicroseconds(40);
+    digitalWrite(I2C_SDA, LOW); //START:when CLK is high,DATA change form high to low
+    delayMicroseconds(40);
+    digitalWrite(I2C_SCL, LOW); //钳住I2C总线，准备发送或接收数据
+}
+//产生IIC停止信号
+void DataSave::IIC_Stop(void)
+{
+    SDA_OUT(); //sda线输出
+    digitalWrite(I2C_SCL, LOW);
+    digitalWrite(I2C_SDA, LOW); //STOP:when CLK is high DATA change form low to high
+    delayMicroseconds(40);
+    digitalWrite(I2C_SCL, HIGH);
+    digitalWrite(I2C_SDA, HIGH); //发送I2C总线结束信号
+    delayMicroseconds(40);
+}
+//等待应答信号到来
+//返回值：1，接收应答失败
+//        0，接收应答成功
+uint8_t DataSave::IIC_Wait_Ack(void)
+{
+    uint8_t ucErrTime = 0;
+    SDA_IN(); //SDA设置为输入
+    digitalWrite(I2C_SDA, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(I2C_SCL, HIGH);
+    delayMicroseconds(10);
+    while (READ_SDA())
+    {
+        ucErrTime++;
+        if (ucErrTime > 250)
+        {
+            IIC_Stop();
+            Serial.println("wait error");
+            return 1;
+        }
+    }
+    digitalWrite(I2C_SCL, LOW); //时钟输出0
+    return 0;
+}
+//产生ACK应答
+void DataSave::IIC_Ack(void)
+{
+    digitalWrite(I2C_SCL, LOW);
+    SDA_OUT();
+    digitalWrite(I2C_SDA, LOW);
+    delayMicroseconds(20);
+    digitalWrite(I2C_SCL, HIGH);
+    delayMicroseconds(20);
+    digitalWrite(I2C_SCL, LOW);
+}
+//不产生ACK应答
+void DataSave::IIC_NAck(void)
+{
+    digitalWrite(I2C_SCL, LOW);
+    SDA_OUT();
+    digitalWrite(I2C_SDA, HIGH);
+    delayMicroseconds(20);
+    digitalWrite(I2C_SCL, HIGH);
+    delayMicroseconds(20);
+    digitalWrite(I2C_SCL, LOW);
+}
+//IIC发送一个字节
+//返回从机有无应答
+//1，有应答
+//0，无应答
+void DataSave::IIC_Send_Byte(uint8_t txd)
+{
+    uint8_t t;
+    SDA_OUT();
+    digitalWrite(I2C_SCL, LOW); //拉低时钟开始数据传输
+    for (t = 0; t < 8; t++)
+    {
+        if ((txd & 0x80) >> 7)
+            digitalWrite(I2C_SDA, HIGH);
+        else
+            digitalWrite(I2C_SDA, LOW);
+        txd <<= 1;
+        delayMicroseconds(20); //对TEA5767这三个延时都是必须的
+        digitalWrite(I2C_SCL, HIGH);
+        delayMicroseconds(20);
+        digitalWrite(I2C_SCL, LOW);
+        delayMicroseconds(20);
+    }
+}
+//读1个字节，ack=1时，发送ACK，ack=0，发送nACK
+uint8_t DataSave::IIC_Read_Byte(unsigned char ack)
+{
+    unsigned char i, receive = 0;
+    SDA_IN(); //SDA设置为输入
+    for (i = 0; i < 8; i++)
+    {
+        digitalWrite(I2C_SCL, LOW);
+        delayMicroseconds(20);
+        digitalWrite(I2C_SCL, HIGH);
+        receive <<= 1;
+        if (READ_SDA())
+            receive++;
+        delayMicroseconds(20);
+    }
+    if (!ack)
+        IIC_NAck(); //发送nACK
+    else
+        IIC_Ack(); //发送ACK
+    return receive;
+}
 
 void DataSave::begin()
 {
-    Wire.begin(I2C_SDA, I2C_SCL, (uint32_t)500000);
-    Wire.scan();
+    pinMode(I2C_SDA, OUTPUT);
+    pinMode(I2C_SCL, OUTPUT);
 
-    volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(0x50);
+    digitalWrite(I2C_SDA, HIGH);
+    digitalWrite(I2C_SCL, HIGH);
 
-    int a = i2c_recv_data(I2C_DEVICE_0, write_buff, 2, read_buff, 32);
-    Serial.printf("tran:%d\n", a);
-
-    for (int i = 0; i < 32; i++)
+    uint8_t temp;
+    temp = ReadByte(255); //避免每次开机都写AT24CXX
+    Serial.printf("read:%d\n", temp);
+    if (temp != 0X55)     //排除第一次初始化的情况
     {
-        Serial.printf("%d ", read_buff[i]);
+        WriteByte(255, 0X55);
+        temp = ReadByte(255);
+        if (temp == 0X55)
+            Serial.println("done");
+        else
+        {
+            Serial.println("error");
+        }
     }
 }
 
 void DataSave::WriteByte(uint8_t address, uint8_t data)
 {
-    volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(0x50);
-
-    write_buff[0] = address;
-    write_buff[1] = data;
-    uint8_t i = i2c_send_data(I2C_DEVICE_0, write_buff, 32);
-    Serial.printf("tran:%d\n", i);
+    IIC_Start();
+    if (EE_TYPE > AT24C16)
+    {
+        IIC_Send_Byte(0XA0); //发送写命令
+        IIC_Wait_Ack();
+        IIC_Send_Byte(address >> 8); //发送高地址
+    }
+    else
+    {
+        IIC_Send_Byte(0XA0 + ((address / 256) << 1)); //发送器件地址0XA0,写数据
+    }
+    IIC_Wait_Ack();
+    IIC_Send_Byte(address % 256); //发送低地址
+    IIC_Wait_Ack();
+    IIC_Send_Byte(data); //发送字节
+    IIC_Wait_Ack();
+    IIC_Stop(); //产生一个停止条件
+    delay(10);
 }
 void DataSave::WritePage(uint8_t address, uint8_t *data, uint8_t length)
 {
-    volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(0x50);
-
-    uint8_t *a = (uint8_t *)malloc((1 + length) * sizeof(uint8_t));
-    a[0] = address;
-    for (int i = 0; i < length; i++)
+    while (length--)
     {
-        a[i + 2] = data[i];
+        WriteByte(address, *data);
+        address++;
+        data++;
     }
-    i2c_send_data(I2C_DEVICE_0, a, 1 + length);
-    free(a);
 }
 uint8_t DataSave::ReadByte(uint8_t address)
 {
-    volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(0x50);
-
-    uint8_t i = i2c_recv_data(I2C_DEVICE_0, &address, 1, read_buff, 64);
-    Serial.printf("tran:%d\n", i);
-    for (int a = 0; a < 128; a++)
+    uint8_t temp = 0;
+    IIC_Start();
+    if (EE_TYPE > AT24C16)
     {
-        Serial.printf("%d ", read_buff[a]);
+        IIC_Send_Byte(0XA0); //发送写命令
+        IIC_Wait_Ack();
+        IIC_Send_Byte(address >> 8); //发送高地址
+        IIC_Wait_Ack();
     }
-    return 0;
+    else
+        IIC_Send_Byte(0XA0 + ((address / 256) << 1)); //发送器件地址0XA0,写数据
+
+    IIC_Wait_Ack();
+    IIC_Send_Byte(address % 256); //发送低地址
+    IIC_Wait_Ack();
+    IIC_Start();
+    IIC_Send_Byte(0XA1); //进入接收模式
+    IIC_Wait_Ack();
+    temp = IIC_Read_Byte(0);
+    IIC_Stop(); //产生一个停止条件
+    return temp;
 }
 void DataSave::ReadPage(uint8_t address, uint8_t *data, uint8_t length)
 {
-    volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(0x50);
-
-    read_buff[0] = address;
-
-    i2c_recv_data(I2C_DEVICE_0, read_buff, 1, data, length);
+    while (length)
+    {
+        *data++ = ReadByte(address++);
+        length--;
+    }
 }
 
 void DataSave::SaveData(VI data)
