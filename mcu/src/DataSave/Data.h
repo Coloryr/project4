@@ -14,7 +14,7 @@ class DataSave
 {
 private:
     uint8_t write_buff[32] = {0x00, 0xff, 0x55, 0x67, 0x88};
-    uint8_t read_buff[128] = {0xff};
+    uint8_t read_buff[32] = {0x00};
 
 public:
     DataSave();

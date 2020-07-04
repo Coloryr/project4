@@ -25,27 +25,13 @@ spi_chip_select_t spi_chip_select = SPI_CHIP_SELECT_0;
 
 static w25qxx_status_t w25qxx_receive_data(uint8_t *cmd_buff, uint8_t cmd_len, uint8_t *rx_buff, uint32_t rx_len)
 {
-    spi_init(spi_bus_no, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
     spi_receive_data_standard(spi_bus_no, spi_chip_select, cmd_buff, cmd_len, rx_buff, rx_len);
     return W25QXX_OK;
 }
 
 static w25qxx_status_t w25qxx_send_data(uint8_t *cmd_buff, uint8_t cmd_len, uint8_t *tx_buff, uint32_t tx_len)
 {
-    spi_init(spi_bus_no, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
     spi_send_data_standard(spi_bus_no, spi_chip_select, cmd_buff, cmd_len, tx_buff, tx_len);
-    return W25QXX_OK;
-}
-
-static w25qxx_status_t w25qxx_receive_data_enhanced_dma(uint32_t *cmd_buff, uint8_t cmd_len, uint8_t *rx_buff, uint32_t rx_len)
-{
-    spi_receive_data_multiple_dma(DMAC_CHANNEL0, DMAC_CHANNEL1, spi_bus_no, spi_chip_select, cmd_buff, cmd_len, rx_buff, rx_len);
-    return W25QXX_OK;
-}
-
-static w25qxx_status_t w25qxx_send_data_enhanced_dma(uint32_t *cmd_buff, uint8_t cmd_len, uint8_t *tx_buff, uint32_t tx_len)
-{
-    spi_send_data_multiple_dma(DMAC_CHANNEL0, spi_bus_no, spi_chip_select, cmd_buff, cmd_len, tx_buff, tx_len);
     return W25QXX_OK;
 }
 
@@ -68,16 +54,15 @@ static w25qxx_status_t w25qxx_write_enable(void)
     return W25QXX_OK;
 }
 
-static w25qxx_status_t w25qxx_write_status_reg(uint8_t reg1_data, uint8_t reg2_data)
+static w25qxx_status_t w25qxx_write_disable(void)
 {
-    uint8_t cmd[3] = {WRITE_REG1, reg1_data, reg2_data};
+    uint8_t cmd[1] = {WRITE_DISABLE};
 
-    w25qxx_write_enable();
-    w25qxx_send_data(cmd, 3, 0, 0);
+    w25qxx_send_data(cmd, 1, 0, 0);
     return W25QXX_OK;
 }
 
-static w25qxx_status_t w25qxx_read_status_reg1(uint8_t *reg_data)
+static w25qxx_status_t w25qxx_read_status_reg(uint8_t *reg_data)
 {
     uint8_t cmd[1] = {READ_REG1};
     uint8_t data[1] = {0};
@@ -87,26 +72,12 @@ static w25qxx_status_t w25qxx_read_status_reg1(uint8_t *reg_data)
     return W25QXX_OK;
 }
 
-static w25qxx_status_t w25qxx_read_status_reg2(uint8_t *reg_data)
+static w25qxx_status_t w25qxx_write_status_reg(uint8_t reg_data)
 {
-    uint8_t cmd[1] = {READ_REG2};
-    uint8_t data[1] = {0};
+    uint8_t cmd[1] = {WRITE_REG1};
+    uint8_t data[1] = {reg_data};
 
-    w25qxx_receive_data(cmd, 1, data, 1);
-    *reg_data = data[0];
-    return W25QXX_OK;
-}
-
-static w25qxx_status_t w25qxx_enable_quad_mode(void)
-{
-    uint8_t reg_data = 0;
-
-    w25qxx_read_status_reg2(&reg_data);
-    if(!(reg_data & REG2_QUAL_MASK))
-    {
-        reg_data |= REG2_QUAL_MASK;
-        w25qxx_write_status_reg(0x00, reg_data);
-    }
+    w25qxx_send_data(cmd, 1, data, 1);
     return W25QXX_OK;
 }
 
@@ -114,8 +85,8 @@ static w25qxx_status_t w25qxx_is_busy(void)
 {
     uint8_t status = 0;
 
-    w25qxx_read_status_reg1(&status);
-    if(status & REG1_BUSY_MASK)
+    w25qxx_read_status_reg(&status);
+    if (status & REG1_BUSY_MASK)
         return W25QXX_BUSY;
     return W25QXX_OK;
 }
@@ -128,137 +99,116 @@ w25qxx_status_t w25qxx_sector_erase(uint32_t addr)
     cmd[2] = (uint8_t)(addr >> 8);
     cmd[3] = (uint8_t)(addr);
     w25qxx_write_enable();
+    while (w25qxx_is_busy() == W25QXX_BUSY)
+        ;
     w25qxx_send_data(cmd, 4, 0, 0);
+    while (w25qxx_is_busy() == W25QXX_BUSY)
+        ;
     return W25QXX_OK;
 }
 
 static w25qxx_status_t w25qxx_quad_page_program(uint32_t addr, uint8_t *data_buf, uint32_t length)
 {
-    uint32_t cmd[2] = {0};
+    uint8_t cmd[4] = {0};
 
-    cmd[0] = QUAD_PAGE_PROGRAM;
-    cmd[1] = addr;
+    cmd[0] = PAGE_PROGRAM;
+    cmd[1] = addr >> 16;
+    cmd[2] = addr >> 8;
+    cmd[3] = addr;
     w25qxx_write_enable();
-    spi_init(spi_bus_no, SPI_WORK_MODE_0, SPI_FF_QUAD, 32 /*DATALENGTH*/, 0);
-    spi_init_non_standard(spi_bus_no, 8 /*instrction length*/, 24 /*address length*/, 0 /*wait cycles*/,
-                          SPI_AITM_STANDARD /*spi address trans mode*/);
-    w25qxx_send_data_enhanced_dma(cmd, 2, data_buf, length);
-    while(w25qxx_is_busy() == W25QXX_BUSY)
+    w25qxx_send_data(cmd, 4, data_buf, length);
+    while (w25qxx_is_busy() == W25QXX_BUSY)
         ;
-    return W25QXX_OK;
-}
-
-static w25qxx_status_t w25qxx_sector_program(uint32_t addr, uint8_t *data_buf)
-{
-    uint8_t index = 0;
-
-    for(index = 0; index < w25qxx_FLASH_PAGE_NUM_PER_SECTOR; index++)
-    {
-        w25qxx_quad_page_program(addr, data_buf, w25qxx_FLASH_PAGE_SIZE);
-        addr += w25qxx_FLASH_PAGE_SIZE;
-        data_buf += w25qxx_FLASH_PAGE_SIZE;
-    }
     return W25QXX_OK;
 }
 
 w25qxx_status_t w25qxx_write_data_direct(uint32_t addr, uint8_t *data_buf, uint32_t length)
 {
-    if ( length % w25qxx_FLASH_SECTOR_SIZE != 0 ) {
-        return W25QXX_ERROR;
-    }
-    for(uint32_t i = 0 ; i < length ; i+= 0x010000) {
-        w25qxx_sector_program(addr + i, data_buf + i);
-    }
+    uint16_t pageremain;
+    pageremain = 256 - addr % 256; //单页剩余的字节数
+    if (length <= pageremain)
+        pageremain = length; //不大于256个字节
+    while (1)
+    {
+        w25qxx_quad_page_program(addr, data_buf, pageremain);
+        if (length == pageremain)
+            break; //写入结束了
+        else       //NumByteToWrite>pageremain
+        {
+            data_buf += pageremain;
+            addr += pageremain;
+
+            length -= pageremain; //减去已经写入了的字节数
+            if (length > 256)
+                pageremain = 256; //一次可以写入256个字节
+            else
+                pageremain = length; //不够256个字节了
+        }
+    };
     return W25QXX_OK;
 }
+
+uint8_t W25QXX_BUFFER[4096];
 
 w25qxx_status_t w25qxx_write_data(uint32_t addr, uint8_t *data_buf, uint32_t length)
 {
-    uint32_t sector_addr = 0;
-    uint32_t sector_offset = 0;
-    uint32_t sector_remain = 0;
-    uint32_t write_len = 0;
-    uint32_t index = 0;
-    uint8_t *pread = NULL;
-    uint8_t *pwrite = NULL;
-    uint8_t swap_buf[w25qxx_FLASH_SECTOR_SIZE] = {0};
-
-    while(length)
+    uint32_t secpos;
+    uint16_t secoff;
+    uint16_t secremain;
+    uint16_t i;
+    uint8_t *W25QXX_BUF;
+    W25QXX_BUF = W25QXX_BUFFER;
+    secpos = addr / 4096;      //扇区地址
+    secoff = addr % 4096;      //在扇区内的偏移
+    secremain = 4096 - secoff; //扇区剩余空间大小
+    if (length <= secremain)
+        secremain = length; //不大于4096个字节
+    while (1)
     {
-        sector_addr = addr & (~(w25qxx_FLASH_SECTOR_SIZE - 1));
-        sector_offset = addr & (w25qxx_FLASH_SECTOR_SIZE - 1);
-        sector_remain = w25qxx_FLASH_SECTOR_SIZE - sector_offset;
-        write_len = ((length < sector_remain) ? length : sector_remain);
-        w25qxx_read_data(sector_addr, swap_buf, w25qxx_FLASH_SECTOR_SIZE);
-        pread = swap_buf + sector_offset;
-        pwrite = data_buf;
-        for(index = 0; index < write_len; index++)
+        w25qxx_read_data(secpos * 4096, W25QXX_BUF, 4096); //读出整个扇区的内容
+        for (i = 0; i < secremain; i++)                    //校验数据
         {
-            if((*pwrite) != ((*pwrite) & (*pread)))
+            if (W25QXX_BUF[secoff + i] != 0XFF)
+                break; //需要擦除
+        }
+        if (i < secremain) //需要擦除
+        {
+            w25qxx_sector_erase(secpos);    //擦除这个扇区
+            for (i = 0; i < secremain; i++) //复制
             {
-                w25qxx_sector_erase(sector_addr);
-                while(w25qxx_is_busy() == W25QXX_BUSY)
-                    ;
-                break;
+                W25QXX_BUF[i + secoff] = data_buf[i];
             }
-            pwrite++;
-            pread++;
+            w25qxx_write_data_direct(secpos * 4096, W25QXX_BUF, 4096); //写入整个扇区
         }
-        if(write_len == w25qxx_FLASH_SECTOR_SIZE)
+        else
+            w25qxx_write_data_direct(addr, data_buf, secremain); //写已经擦除了的,直接写入扇区剩余区间.
+        if (length == secremain)
+            break; //写入结束了
+        else       //写入未结束
         {
-            w25qxx_sector_program(sector_addr, data_buf);
-        } else
-        {
-            pread = swap_buf + sector_offset;
-            pwrite = data_buf;
-            for(index = 0; index < write_len; index++)
-                *pread++ = *pwrite++;
-            w25qxx_sector_program(sector_addr, swap_buf);
-        }
-        length -= write_len;
-        addr += write_len;
-        data_buf += write_len;
-    }
-    return W25QXX_OK;
-}
+            secpos++;   //扇区地址增1
+            secoff = 0; //偏移位置为0
 
-static w25qxx_status_t _w25qxx_read_data(uint32_t addr, uint8_t *data_buf, uint32_t length)
-{
-    uint32_t cmd[2] = {0};
-    cmd[0] = FAST_READ_QUAL_IO;
-    cmd[1] = addr << 8;
-    spi_init(spi_bus_no, SPI_WORK_MODE_0, SPI_FF_QUAD, 32, 0);
-    spi_init_non_standard(spi_bus_no, 8 /*instrction length*/, 32 /*address length*/, 4 /*wait cycles*/,
-                          SPI_AITM_ADDR_STANDARD /*spi address trans mode*/);
-    w25qxx_receive_data_enhanced_dma(cmd, 2, data_buf, length);
+            data_buf += secremain; //指针偏移
+            addr += secremain;     //写地址偏移
+            length -= secremain;   //字节数递减
+            if (length > 4096)
+                secremain = 4096; //下一个扇区还是写不完
+            else
+                secremain = length; //下一个扇区可以写完了
+        }
+    };
     return W25QXX_OK;
 }
 
 w25qxx_status_t w25qxx_read_data(uint32_t addr, uint8_t *data_buf, uint32_t length)
 {
-    uint32_t v_remain = length % 4;
-    if(v_remain != 0)
-    {
-        length = length / 4 * 4;
-    }
-
-    uint32_t len = 0;
-
-    while(length)
-    {
-        len = ((length >= 0x010000) ? 0x010000 : length);
-        _w25qxx_read_data(addr, data_buf, len);
-        addr += len;
-        data_buf += len;
-        length -= len;
-    }
-
-    if(v_remain)
-    {
-        uint8_t v_recv_buf[4];
-        _w25qxx_read_data(addr, v_recv_buf, 4);
-        memcpy(data_buf, v_recv_buf, v_remain);
-    }
+    uint8_t cmd[4] = {0};
+    cmd[0] = READ_DATA;
+    cmd[1] = addr >> 16;
+    cmd[2] = addr >> 8;
+    cmd[3] = addr;
+    w25qxx_receive_data(cmd, 4, data_buf, length);
     return W25QXX_OK;
 }
 
@@ -266,6 +216,5 @@ w25qxx_status_t w25qxx_init()
 {
     spi_init(spi_bus_no, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
     spi_set_clk_rate(SPI_DEVICE_0, 10000000);
-    w25qxx_enable_quad_mode();
     return W25QXX_OK;
 }
