@@ -16,16 +16,11 @@ void ULCD::begin()
 
 void ULCD::SetPage(uint8_t page)
 {
-    char data[9] = "page ";
-    data[5] = 0x30 + page;
-    data[6] = 0xff;
-    data[7] = 0xff;
-    data[8] = 0xff;
-    Serial1.write(data);
+    Serial1.printf("page %dÿÿÿ", page);
 }
 void ULCD::UpDate(VI vi)
 {
-    Serial1.printf("x0.txt=%f.2", vi.SetV);
+    Serial1.printf("x0.txt=%f.2ÿÿÿ", vi.SetV);
 }
 KeyDown ULCD::GetKeyDown()
 {

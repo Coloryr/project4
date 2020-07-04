@@ -21,11 +21,11 @@ void TaskTick(void *pvParameters)
             NowData->mode = LCD.NowSet.mode;
             if (NowData->mode == 0)
             {
-                Serial1.printf("t1.txt=V");
+                Serial1.printf("t1.txt=Vÿÿÿ");
             }
             else
             {
-                Serial1.printf("t1.txt=I");
+                Serial1.printf("t1.txt=Iÿÿÿ");
             }
             break;
         }
@@ -41,11 +41,11 @@ void TaskTick(void *pvParameters)
             NowData->mode = LCD.NowSet.mode;
             if (NowData->mode == 0)
             {
-                Serial1.printf("t0.txt=%f.2", VaI->SetV);
+                Serial1.printf("t0.txt=%f.2ÿÿÿ", VaI->SetV);
             }
             else
             {
-                Serial1.printf("t0.txt=%f.2", VaI->SetI);
+                Serial1.printf("t0.txt=%f.2ÿÿÿ", VaI->SetI);
             }
         }
         break;

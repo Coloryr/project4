@@ -4,12 +4,6 @@
 #include <Arduino.h>
 #include <DataS.h>
 
-union DataTran1
-{
-    uint8_t u8[2];
-    uint16_t u16;
-};
-
 class DataSave
 {
 private:
@@ -21,9 +15,9 @@ public:
     void begin();
     void SaveData(VI data);
     void GetData(VI *data);
-    void SetSave(Mode mode, Local local, float data);
-    void GetSave(Mode mode, Local local, float *data);
-    void Remove(Mode mode, Local local);
+    void Save();
+    void Read();
+    void Clear();
 };
 
 extern class DataSave SaveData;

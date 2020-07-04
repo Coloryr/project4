@@ -198,6 +198,8 @@ w25qxx_status_t w25qxx_write_data(uint32_t addr, uint8_t *data_buf, uint32_t len
                 secremain = length; //下一个扇区可以写完了
         }
     };
+    while (w25qxx_is_busy() == W25QXX_BUSY)
+        ;
     return W25QXX_OK;
 }
 

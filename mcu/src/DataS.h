@@ -3,6 +3,18 @@
 
 #include <Arduino.h>
 
+union DataTran1
+{
+    uint8_t u8[2];
+    uint16_t u16;
+};
+
+union DataTran2
+{
+    uint32_t u32;
+    float f;
+};
+
 union DataTran
 {
     float f;

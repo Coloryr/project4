@@ -6,12 +6,15 @@
 #include <Tasks/LCDTask.h>
 #include <DataS.h>
 #include <LCD/ULCD.h>
+#include <AD/ADC.h>
+#include <AD/DAC.h>
 #include <DataSave/Data.h>
-#include "gpiohs.h"
-#include "gpio.h"
 
 VI *VaI;
 Now *NowData;
+
+float VSave[3];
+float ISave[3];
 
 void TaskHello(void *pvParameters)
 {
@@ -73,13 +76,14 @@ void setup()
     Serial.begin(115200);
     LCD.begin();
     SaveData.begin();
-
+    AD_ADC.begin();
+    AD_DAC.begin();
     LCD.SetPage(0);
 
-    // init();
+    init();
 
-    // TaskStart();
-    // vTaskStartScheduler();
+    TaskStart();
+    vTaskStartScheduler();
 }
 
 void loop()

@@ -9,6 +9,7 @@ class ULCD
 private:
     char buff[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     KeyDown NowKeyDown;
+    char ff[3] = {0xff, 0xff, 0xff};
 
 public:
     OnSet NowSet;
