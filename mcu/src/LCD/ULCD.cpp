@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <LCD/ULCD.h>
 #include <IO.h>
+#include <string.h>
 
 ULCD LCD;
 
@@ -16,11 +17,13 @@ void ULCD::begin()
 
 void ULCD::SetPage(uint8_t page)
 {
-    Serial1.printf("page %dÿÿÿ", page);
+    Serial1.printf("page %d", page);
+    Serial1.write(ff, 3);
 }
 void ULCD::UpDate(VI vi)
 {
     Serial1.printf("x0.txt=%f.2ÿÿÿ", vi.SetV);
+    Serial1.write(ff, 3);
 }
 KeyDown ULCD::GetKeyDown()
 {
@@ -32,8 +35,11 @@ void ULCD::SetIn(OnSet data)
 
 void ULCD::Tick()
 {
-    Serial1.readBytes(buff, 10);
-    if (buff[0] != 0x00)
+    for (int i = 0; i < 10; i++)
+    {
+        buff[i] = Serial1.read();
+    }
+    if (buff[0] != 0xff)
     {
         switch (buff[0])
         {
@@ -49,7 +55,7 @@ void ULCD::Tick()
             break;
         }
     }
-    Serial1.print(buff);
+    Serial.write(buff, 10);
 }
 
 void ULCD::clear()

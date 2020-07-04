@@ -7,17 +7,17 @@
 
 void TaskADC(void *pvParameters)
 {
-    (void)pvParameters;
+    Serial.println("Task ADC");
+    portTickType xLastWakeTime;
+    xLastWakeTime = xTaskGetTickCount();
     for (;;)
     {
-        static portTickType xLastWakeTime;
-        const portTickType xFrequency = pdMS_TO_TICKS(100);
-
+        
         AD_ADC.getI(&VaI->NowI);
         AD_ADC.getV(&VaI->NowV);
 
         // 使用当前时间初始化变量xLastWakeTime ,注意这和vTaskDelay()函数不同
-        xLastWakeTime = xTaskGetTickCount();
-        vTaskDelayUntil(&xLastWakeTime, xFrequency);
+
+        vTaskDelayUntil(&xLastWakeTime, ( 100 / portTICK_RATE_MS ));
     }
 }

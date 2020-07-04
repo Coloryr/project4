@@ -16,20 +16,9 @@ Now *NowData;
 float VSave[3];
 float ISave[3];
 
-void TaskHello(void *pvParameters)
-{
-    Serial.printf("hello world");
-}
-
 void TaskStart()
 {
-    xTaskCreate(
-        TaskHello,
-        (const portCHAR *)"Start",
-        128,
-        NULL,
-        2,
-        NULL);
+
     xTaskCreate(
         TaskLCD,
         (const portCHAR *)"LCD",
@@ -84,6 +73,7 @@ void setup()
 
     TaskStart();
     vTaskStartScheduler();
+    Serial.printf("hello world");
 }
 
 void loop()

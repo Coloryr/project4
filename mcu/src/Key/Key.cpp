@@ -1,7 +1,5 @@
 #include <Arduino.h>
 #include <Key/Key.h>
-#include <FreeRTOS.h>
-#include <task.h>
 #include <IO.h>
 
 Key KeyBoard;
@@ -39,13 +37,8 @@ Key::Key()
 
 void Key::Tick()
 {
-    static portTickType xLastWakeTime;
-    const portTickType xFrequency = pdMS_TO_TICKS(10);
-
-    // 使用当前时间初始化变量xLastWakeTime ,注意这和vTaskDelay()函数不同
-    xLastWakeTime = xTaskGetTickCount();
     digitalWrite(KA, LOW);
-    vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    delayMicroseconds(10);
     if (digitalRead(K1) == LOW)
     {
         NowKeyDown = Number1;
@@ -68,7 +61,7 @@ void Key::Tick()
     }
     digitalWrite(KA, HIGH);
     digitalWrite(KB, LOW);
-    vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    delayMicroseconds(10);
     if (digitalRead(K1) == LOW)
     {
         NowKeyDown = Number4;
@@ -91,7 +84,7 @@ void Key::Tick()
     }
     digitalWrite(KB, HIGH);
     digitalWrite(KC, LOW);
-    vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    delayMicroseconds(10);
     if (digitalRead(K1) == LOW)
     {
         NowKeyDown = Number7;
@@ -114,7 +107,7 @@ void Key::Tick()
     }
     digitalWrite(KC, HIGH);
     digitalWrite(KD, LOW);
-    vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    delayMicroseconds(10);
     if (digitalRead(K1) == LOW)
     {
         NowKeyDown = Point;
