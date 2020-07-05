@@ -1,8 +1,9 @@
 #include <DataSave/Data.h>
-#include <Wire.h>
 #include <IO.h>
 #include <DataS.h>
-#include <kendryte-standalone-sdk/lib/drivers/include/i2c.h>
+#include <DataSave/w25qxx.h>
+#include <Bilnk.h>
+#include <../../../libraries/SPI/src/SPI.h>
 
 DataSave SaveData;
 
@@ -12,64 +13,74 @@ DataSave::DataSave()
 
 void DataSave::begin()
 {
-    Wire.begin(I2C_SDA, I2C_SCL, (uint32_t)500000);
-}
+    uint8_t temp, temp1;
+    fpioa_set_function(SPI_SCK, FUNC_SPI0_SCLK);
+    fpioa_set_function(SPI_MOSI, FUNC_SPI0_D0);
+    fpioa_set_function(SPI_MISO, FUNC_SPI0_D1);
+    fpioa_set_function(SPI_CS, FUNC_SPI0_SS0);
 
-void DataSave::WriteByte(int address, uint8_t data)
-{
-    volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(ADDRESS | I2C_WR);
+    w25qxx_init();
+    w25qxx_read_id(&temp, &temp1);
+    Serial.printf("ID:0x%02x%02x\n", temp, temp1);
+    uint8_t *data = (uint8_t *)malloc(32 * sizeof(uint8_t));
+    w25qxx_read_data(0x40, data, 32);
 
-    Address addr;
-    addr.i = address;
-    write_buff[0] = addr.u[0];
-    write_buff[1] = addr.u[1];
-    write_buff[2] = data;
-    i2c_send_data(I2C_DEVICE_0, write_buff, 3);
-}
-void DataSave::WritePage(int address, uint8_t *data, uint8_t length)
-{
-    volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(I2C_SDA);
-
-    Address addr;
-    addr.i = address;
-    uint8_t *a = (uint8_t *)malloc((2 + length) * sizeof(uint8_t));
-    a[0] = addr.u[0];
-    a[1] = addr.u[1];
-    for (int i = 0; i < length; i++)
+    if (data[1] != write_buff[1])
     {
-        a[i + 2] = data[i];
+        Serial.println("init");
+        w25qxx_write_data(0x40, write_buff, 32);
     }
-    i2c_send_data(I2C_DEVICE_0, a, 2 + length);
-    free(a);
+    else
+    {
+        Serial.println("done");
+    }
+    free(data);
 }
-uint8_t DataSave::ReadByte(int address)
+
+void DataSave::Save()
 {
-    volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(0xA1);
-
-    Address addr;
-    addr.i = address;
-    read_buff[0] = addr.u[0];
-    read_buff[1] = addr.u[1];
-
-    uint8_t data = 0;
-
-    i2c_recv_data(I2C_DEVICE_0, read_buff, 2, &data, 1);
-    return data;
+    uint8_t *data = (uint8_t *)malloc(4 * 6 * sizeof(uint8_t));
+    DataTran tran;
+    for (uint8_t i = 0; i < 3; i++)
+    {
+        tran.f = VSave[i];
+        data[i * 4] = tran.u[0];
+        data[i * 4 + 1] = tran.u[1];
+        data[i * 4 + 2] = tran.u[2];
+        data[i * 4 + 3] = tran.u[3];
+    }
+    for (uint8_t i = 0; i < 3; i++)
+    {
+        tran.f = ISave[i];
+        data[i * 4 + 12] = tran.u[0];
+        data[i * 4 + 13] = tran.u[1];
+        data[i * 4 + 14] = tran.u[2];
+        data[i * 4 + 15] = tran.u[3];
+    }
+    w25qxx_write_data(0x0a, data, 24);
+    free(data);
 }
-void DataSave::ReadPage(int address, uint8_t *data, uint8_t length)
+void DataSave::Read()
 {
-    volatile i2c_t *i2c_adapter = i2c[I2C_DEVICE_0];
-    i2c_adapter->tar = I2C_TAR_ADDRESS(0xA1);
-
-    Address addr;
-    addr.i = address;
-    read_buff[0] = addr.u[0];
-    read_buff[1] = addr.u[1];
-
-    i2c_recv_data(I2C_DEVICE_0, read_buff, 2, data, length);
+    uint8_t *data = (uint8_t *)malloc(4 * 6 * sizeof(uint8_t));
+    w25qxx_read_data(0x0a, data, 24);
+    DataTran tran;
+    for (uint8_t i = 0; i < 3; i++)
+    {
+        tran.u[0] = data[i * 4];
+        tran.u[1] = data[i * 4 + 1];
+        tran.u[2] = data[i * 4 + 2];
+        tran.u[3] = data[i * 4 + 3];
+        VSave[i] = tran.f;
+    }
+    for (uint8_t i = 0; i < 3; i++)
+    {
+        tran.u[0] = data[i * 4 + 12];
+        tran.u[1] = data[i * 4 + 13];
+        tran.u[2] = data[i * 4 + 14];
+        tran.u[3] = data[i * 4 + 15];
+        ISave[i] = tran.f;
+    }
 }
 
 void DataSave::SaveData(VI data)
@@ -86,13 +97,13 @@ void DataSave::SaveData(VI data)
     {
         a[i + 4] = tran.u[i];
     }
-    WritePage(0x00, a, 8);
+    w25qxx_write_data(0x00, a, 8);
     free(a);
 }
 void DataSave::GetData(VI *data)
 {
     uint8_t *a = (uint8_t *)malloc(8 * sizeof(uint8_t));
-    ReadPage(0x00, a, 8);
+    w25qxx_read_data(0x00, a, 8);
     DataTran tran;
     for (int i = 0; i < 4; i++)
     {
@@ -106,46 +117,19 @@ void DataSave::GetData(VI *data)
     data->SetV = tran.f;
     free(a);
 }
-void DataSave::SetSave(Mode mode, Local local, float data)
+
+void DataSave::Clear()
 {
-    DataTran tran;
-    switch (mode)
+    for (uint8_t i = 0; i < 3; i++)
     {
-    case V:
-        tran.f = data;
-        WritePage(0x10 + local, tran.u, 4);
-        break;
-    case I:
-        tran.f = data;
-        WritePage(0x20 + local, tran.u, 4);
-        break;
+        VSave[i] = 0;
+        ISave[i] = 0;
     }
-}
-void DataSave::GetSave(Mode mode, Local local, float *data)
-{
-    DataTran tran;
-    switch (mode)
+    uint8_t *a = (uint8_t *)malloc(4 * 6 * sizeof(uint8_t));
+    for (uint8_t i = 0; i < 24; i++)
     {
-    case V:
-        ReadPage(0x10 + local, tran.u, 4);
-        data[0] = tran.f;
-        break;
-    case I:
-        ReadPage(0x20 + local, tran.u, 4);
-        data[0] = tran.f;
-        break;
+        a[i] = 0;
     }
-}
-void DataSave::Remove(Mode mode, Local local)
-{
-    uint8_t a[] = {0, 0, 0, 0};
-    switch (mode)
-    {
-    case V:
-        WritePage(0x10 + local, a, 4);
-        break;
-    case I:
-        WritePage(0x20 + local, a, 4);
-        break;
-    }
+    w25qxx_write_data(0x0a, a, 24);
+    free(a);
 }

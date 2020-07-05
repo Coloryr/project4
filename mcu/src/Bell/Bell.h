@@ -6,6 +6,7 @@ class Bell
 private:
     uint8_t now;
     bool isBell;
+
 public:
     Bell();
     void begin();

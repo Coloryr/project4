@@ -4,8 +4,10 @@
 #define LCD1 10
 #define LCD2 11
 
-#define I2C_SDA 12
-#define I2C_SCL 13
+#define SPI_CS 3
+#define SPI_MISO 2
+#define SPI_MOSI 1
+#define SPI_SCK 0
 
 #define KA 18
 #define KB 19

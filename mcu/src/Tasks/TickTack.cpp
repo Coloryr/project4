@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include <Tasks/TickTask.h>
+#include <FreeRTOS.h>
+#include <task.h>
 #include <LCD/ULCD.h>
 #include <Key/Key.h>
 #include <DataS.h>
@@ -7,53 +9,59 @@
 
 void TaskTick(void *pvParameters)
 {
-    LCD.Tick();
-    KeyBoard.Tick();
-    switch (LCD.GetKeyDown())
+    Serial.println("Task Tick");
+    portTickType xLastWakeTime;
+    xLastWakeTime = xTaskGetTickCount();
+    for (;;)
     {
-    case Menu1:
-        /* code */
-        break;
-    case Menu2:
-        if (NowData.page == 0)
+        KeyBoard.Tick();
+        switch (LCD.GetKeyDown())
         {
-            NowData.page = 1;
-            NowData.mode = LCD.NowSet.mode;
-            if (NowData.mode == 0)
+        case Menu1:
+            /* code */
+            break;
+        case Menu2:
+            if (NowData->page == 0)
             {
-                Serial1.printf("t1.txt=V");
+                NowData->page = 1;
+                NowData->mode = LCD.NowSet.mode;
+                if (NowData->mode == 0)
+                {
+                    Serial1.printf("t1.txt=Vÿÿÿ");
+                }
+                else
+                {
+                    Serial1.printf("t1.txt=Iÿÿÿ");
+                }
+                break;
             }
-            else
+            else if (NowData->page == 1)
             {
-                Serial1.printf("t1.txt=I");
+                /* code */
+            }
+
+        case Menu3:
+            if (NowData->page == 0)
+            {
+                NowData->page = 2;
+                NowData->mode = LCD.NowSet.mode;
+                if (NowData->mode == 0)
+                {
+                    Serial1.printf("t0.txt=%f.2ÿÿÿ", VaI->SetV);
+                }
+                else
+                {
+                    Serial1.printf("t0.txt=%f.2ÿÿÿ", VaI->SetI);
+                }
             }
             break;
+        default:
+            break;
         }
-        else if (NowData.page == 1)
+        if (LCD.GetKeyDown() != NullKey)
         {
-            /* code */
+            LCD.clear();
         }
-
-    case Menu3:
-        if (NowData.page == 0)
-        {
-            NowData.page = 2;
-            NowData.mode = LCD.NowSet.mode;
-            if(NowData.mode == 0)
-            {
-                Serial1.printf("t0.txt=%f.2", VaI.SetV);
-            }
-            else
-            {
-                Serial1.printf("t0.txt=%f.2", VaI.SetI);
-            }
-        }
-        break;
-    default:
-        break;
-    }
-    if (LCD.GetKeyDown() != NullKey)
-    {
-        LCD.clear();
+        vTaskDelayUntil(&xLastWakeTime, (100 / portTICK_RATE_MS));
     }
 }

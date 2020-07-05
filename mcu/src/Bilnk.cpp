@@ -6,13 +6,19 @@
 #include <Tasks/LCDTask.h>
 #include <DataS.h>
 #include <LCD/ULCD.h>
+#include <AD/ADC.h>
+#include <AD/DAC.h>
 #include <DataSave/Data.h>
 
-VI VaI;
-Now NowData;
+VI *VaI;
+Now *NowData;
+
+float VSave[3];
+float ISave[3];
 
 void TaskStart()
 {
+
     xTaskCreate(
         TaskLCD,
         (const portCHAR *)"LCD",
@@ -22,35 +28,52 @@ void TaskStart()
         NULL);
 
     xTaskCreate(
-        TaskADC, (const portCHAR *)"ADC",
+        TaskADC,
+        (const portCHAR *)"ADC",
         128,
         NULL,
         2,
         NULL);
 
     xTaskCreate(
-        TaskADC, (const portCHAR *)"Tick",
+        TaskTick,
+        (const portCHAR *)"Tick",
         128,
         NULL,
         2,
         NULL);
 }
 
+void init()
+{
+    VaI = (VI *)malloc(sizeof(VI));
+    NowData = (Now *)malloc(sizeof(Now));
+
+    NowData->mode = 0;
+    NowData->error = 0;
+    NowData->open = false;
+    NowData->page = 0;
+
+    SaveData.GetData(VaI);
+
+    VaI->NowI = 0;
+    VaI->NowV = 0;
+}
+
 void setup()
 {
-    Serial.begin(112500);
+    Serial.begin(115200);
     LCD.begin();
     SaveData.begin();
+    AD_ADC.begin();
+    AD_DAC.begin();
+    LCD.SetPage(0);
 
-    NowData.mode = 0;
-    NowData.error = 0;
-    NowData.open = false;
-    NowData.page = 0;
+    init();
 
-    SaveData.GetData(&VaI);
-
-    VaI.NowI = 0;
-    VaI.NowV = 0;
+    TaskStart();
+    vTaskStartScheduler();
+    Serial.printf("hello world");
 }
 
 void loop()

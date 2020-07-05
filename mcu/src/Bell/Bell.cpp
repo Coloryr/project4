@@ -12,6 +12,7 @@ Bell::Bell()
 
 void Bell::begin()
 {
+    pinMode(BELL, OUTPUT);
     now = 0;
 }
 
