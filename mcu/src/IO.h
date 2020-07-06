@@ -9,28 +9,31 @@
 #define SPI_MOSI 1
 #define SPI_SCK 0
 
-#define KA 18
-#define KB 19
-#define KC 20
-#define KD 21
-#define K1 22
-#define K2 23
-#define K3 24
-#define K4 25
+#define KA 12
+#define KB 13
+#define KC 14
+#define KD 15
+#define K1 19
+#define K2 20
+#define K3 21
+#define K4 22
 
-#define B1 26
-#define B2 27
-#define BA 28
+#define B1 17
+#define B2 18
+#define BA 16
 
-#define DAC_MISO 14
-#define DAC_SCK 15
-#define DAC_I_CS 16
-#define DAC_V_CS 17
+#define DAC_MISO 23
+#define DAC_SCK 24
+#define DAC_I_CS 25
+#define DAC_V_CS 26
 
-#define ADC_MISO 29
-#define ADC_V_SCK 30
-#define ADC_I_SCK 31
+#define ADC_MISO 27
+#define ADC_V_SCK 28
+#define ADC_I_SCK 29
 
-#define BELL 32
+#define BELL 30
+
+#define ON 31
+#define CUT 32
 
 #endif

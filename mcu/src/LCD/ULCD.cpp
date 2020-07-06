@@ -22,7 +22,7 @@ void ULCD::SetPage(uint8_t page)
 }
 void ULCD::UpDate(VI vi)
 {
-    Serial1.printf("x0.txt=%f.2ÿÿÿ", vi.SetV);
+    Serial1.printf("x0.txt=%f.3", vi.SetV);
     Serial1.write(ff, 3);
 }
 KeyDown ULCD::GetKeyDown()
@@ -33,13 +33,38 @@ void ULCD::SetIn(OnSet data)
 {
 }
 
+void ULCD::SetON(bool on)
+{
+    
+}
+
+void ULCD::SetSave(float data)
+{
+    Serial1.printf("t0.txt=%f.3", data);
+    Serial1.write(ff, 3);
+}
+
+void ULCD::SetMode(bool mode)
+{
+    switch (mode)
+    {
+    case true:
+        Serial1.printf("t1.txt=V");
+        break;
+    case false:
+        Serial1.printf("t1.txt=I");
+        break;
+    }
+    Serial1.write(ff, 3);
+}
+
 void ULCD::Tick()
 {
     for (int i = 0; i < 10; i++)
     {
         buff[i] = Serial1.read();
     }
-    if (buff[0] != 0xff)
+    if (buff[0] != 0xFF)
     {
         switch (buff[0])
         {
@@ -55,14 +80,10 @@ void ULCD::Tick()
             break;
         }
     }
-    Serial.write(buff, 10);
 }
 
 void ULCD::clear()
 {
     NowKeyDown = NullKey;
-    for (int i = 0; i < 10; i++)
-    {
-        buff[0] = 0x00;
-    }
+    buff[0] = 0xFF;
 }

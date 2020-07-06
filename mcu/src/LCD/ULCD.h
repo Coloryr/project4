@@ -16,8 +16,11 @@ public:
     ULCD();
     void clear();
     void begin();
+    void SetON(bool on);
+    void SetMode(bool mode);
     void SetPage(uint8_t page);
     void UpDate(VI vi);
+    void SetSave(float data);
     KeyDown GetKeyDown();
     void SetIn(OnSet data);
     void Tick();

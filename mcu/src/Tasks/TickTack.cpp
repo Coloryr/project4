@@ -14,54 +14,52 @@ void TaskTick(void *pvParameters)
     xLastWakeTime = xTaskGetTickCount();
     for (;;)
     {
-        KeyBoard.Tick();
-        switch (LCD.GetKeyDown())
+        KeyBoard.KeyScan();
+        switch (NowData->page)
         {
-        case Menu1:
-            /* code */
-            break;
-        case Menu2:
-            if (NowData->page == 0)
+        case 0:
+            switch (LCD.GetKeyDown())
             {
+            case Menu1:
+                /* code */
+                break;
+            case Menu2:
                 NowData->page = 1;
                 NowData->mode = LCD.NowSet.mode;
-                if (NowData->mode == 0)
-                {
-                    Serial1.printf("t1.txt=Vÿÿÿ");
-                }
-                else
-                {
-                    Serial1.printf("t1.txt=Iÿÿÿ");
-                }
+                LCD.SetMode(NowData->mode == 0 ? true : false);
                 break;
-            }
-            else if (NowData->page == 1)
-            {
-                /* code */
-            }
 
-        case Menu3:
-            if (NowData->page == 0)
-            {
+            case Menu3:
                 NowData->page = 2;
                 NowData->mode = LCD.NowSet.mode;
-                if (NowData->mode == 0)
-                {
-                    Serial1.printf("t0.txt=%f.2ÿÿÿ", VaI->SetV);
-                }
-                else
-                {
-                    Serial1.printf("t0.txt=%f.2ÿÿÿ", VaI->SetI);
-                }
+                LCD.SetSave(NowData->mode == 0 ? VaI->SetV : VaI->SetI);
+                break;
+            default:
+                break;
+            }
+            switch (KeyBoard.GetKey())
+            {
+            case Number1:
+                /* code */
+                break;
+            default:
+                break;
+            }
+            switch (KeyBoard.GetSpan())
+            {
+            case Next:
+                Serial.println("Next");
+                break;
+            case Down:
+                Serial.println("Down");
+                break;
+            default:
+                break;
             }
             break;
-        default:
-            break;
         }
-        if (LCD.GetKeyDown() != NullKey)
-        {
-            LCD.clear();
-        }
+        LCD.clear();
+        KeyBoard.KeyClear();
         vTaskDelayUntil(&xLastWakeTime, (100 / portTICK_RATE_MS));
     }
 }

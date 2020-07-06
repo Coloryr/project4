@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <Key/Key.h>
 #include <IO.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
 Key KeyBoard;
 
@@ -31,11 +33,17 @@ Key::Key()
     digitalWrite(KB, HIGH);
     digitalWrite(KC, HIGH);
     digitalWrite(KD, HIGH);
+    digitalWrite(B1, HIGH);
+    digitalWrite(B2, HIGH);
+    digitalWrite(BA, HIGH);
 
     NowKeyDown = NullKey;
+    SpanDown = NullKey;
+
+    B1_Last = B2_Last = GPIO_PV_HIGH;
 }
 
-void Key::Tick()
+void Key::KeyScan()
 {
     digitalWrite(KA, LOW);
     delayMicroseconds(10);
@@ -130,6 +138,54 @@ void Key::Tick()
     }
 }
 
+void Key::SpanScan()
+{
+    int B1_now = digitalRead(B1);
+    int B2_now = digitalRead(B2);
+    int BA_now = digitalRead(BA);
+    if (B1_now != B1_Last)
+    {
+        if (B1_now == GPIO_PV_HIGH)
+        {
+            if ((B1_Last == GPIO_PV_HIGH) && (B2_now == GPIO_PV_LOW))
+                SpanDown = Next;
+            else if ((B1_Last == GPIO_PV_LOW) && (B2_now == GPIO_PV_HIGH))
+                SpanDown = Last;
+            else if ((B2_Last == B2_now) && (B2_now == GPIO_PV_LOW))
+                SpanDown = Next;
+            else if ((B2_Last == B2_now) && (B2_now == GPIO_PV_HIGH))
+                SpanDown = Last;
+        }
+        else
+        {
+            if ((B2_Last == GPIO_PV_HIGH) && (B2_now == GPIO_PV_LOW))
+                SpanDown = Last;
+            else if ((B2_Last == GPIO_PV_LOW) && (B2_now == GPIO_PV_HIGH))
+                SpanDown = Next;
+            else if ((B2_Last == B2_now) && (B2_now == GPIO_PV_LOW))
+                SpanDown = Last;
+            else if ((B2_Last == B2_now) && (B2_now == GPIO_PV_HIGH))
+                SpanDown = Next;
+        }
+        B1_Last = B1_now;
+        B2_Last = B2_now;
+    }
+    else if (BA_now == GPIO_PV_LOW)
+    {
+        while (BA_now != GPIO_PV_HIGH)
+        {
+            vTaskDelay(200 / portTICK_RATE_MS);
+            BA_now = digitalRead(BA);
+        }
+        SpanDown = Down;
+    }
+}
+
+KeyDown Key::GetSpan()
+{
+    return SpanDown;
+}
+
 KeyDown Key::GetKey()
 {
     return NowKeyDown;
@@ -138,4 +194,5 @@ KeyDown Key::GetKey()
 void Key::KeyClear()
 {
     NowKeyDown = NullKey;
+    SpanDown = NullKey;
 }

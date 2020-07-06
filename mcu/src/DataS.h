@@ -43,6 +43,7 @@ struct OnSet
     uint8_t PointLocal;
     uint8_t StringLength;
     float Val;
+    char Data[6];
 };
 
 enum Mode
@@ -96,7 +97,10 @@ enum KeyDown
     Back,
     Confirm,
     SaveKey,
-    NullKey
+    NullKey,
+    //打开电源，关闭电源
+    ON,
+    OFF
 };
 
 #endif

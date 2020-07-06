@@ -4,6 +4,7 @@
 #include <Tasks/TickTask.h>
 #include <Tasks/ADCTask.h>
 #include <Tasks/LCDTask.h>
+#include <Tasks/SpanTask.h>
 #include <DataS.h>
 #include <LCD/ULCD.h>
 #include <AD/ADC.h>
@@ -38,6 +39,14 @@ void TaskStart()
     xTaskCreate(
         TaskTick,
         (const portCHAR *)"Tick",
+        128,
+        NULL,
+        2,
+        NULL);
+
+    xTaskCreate(
+        TaskSpan,
+        (const portCHAR *)"Span",
         128,
         NULL,
         2,
