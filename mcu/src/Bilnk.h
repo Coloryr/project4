@@ -5,8 +5,9 @@
 
 extern VI VaI;
 extern Now NowData;
+extern OnSet NowSet;
 
-extern float VSave[3];
-extern float ISave[3];
+extern uint16_t VSave[3];
+extern uint16_t ISave[3];
 
 #endif

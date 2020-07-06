@@ -1,6 +1,8 @@
 #ifndef _BELL_
 #define _BELL_
 
+#include <Arduino.h>
+
 class Bell
 {
 private:

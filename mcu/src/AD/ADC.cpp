@@ -42,6 +42,11 @@ void ADC::getV(uint16_t *data)
     TickV();
     TickV();
 
+    if (value > 30000)
+    {
+        value = 0;
+    }
+
     data[0] = (uint16_t)value * V_x;
 }
 void ADC::getI(uint16_t *data)
@@ -56,6 +61,11 @@ void ADC::getI(uint16_t *data)
     TickI();
     TickI();
     TickI();
+
+    if (value > 3000)
+    {
+        value = 0;
+    }
 
     data[0] = (uint16_t)value * V_x;
 }

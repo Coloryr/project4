@@ -23,26 +23,26 @@ void ULCD::SetPage(uint8_t page)
 
 void ULCD::UpSet(VI vi)
 {
-    Serial1.printf("x0.val=%d.3", vi.SetV);
+    Serial1.printf("x0.val=%d", vi.SetV);
     Serial1.write(ff, 3);
-    Serial1.printf("x1.val=%d.3", vi.SetI);
+    Serial1.printf("x1.val=%d", vi.SetI);
     Serial1.write(ff, 3);
 }
 void ULCD::UpDate(VI vi)
 {
-    Serial1.printf("x2.val=%d.3", vi.NowV);
+    Serial1.printf("x2.val=%d", vi.NowV);
     Serial1.write(ff, 3);
-    Serial1.printf("x3.val=%d.3", vi.NowI);
+    Serial1.printf("x3.val=%d", vi.NowI);
     Serial1.write(ff, 3);
 }
 
-void ULCD::UpSave(uint8_t data[3])
+void ULCD::UpSave(uint16_t data[3])
 {
-    Serial1.printf("x0.val=%d.3", data[0]);
+    Serial1.printf("x0.val=%d", data[0]);
     Serial1.write(ff, 3);
-    Serial1.printf("x1.val=%d.3", data[1]);
+    Serial1.printf("x1.val=%d", data[1]);
     Serial1.write(ff, 3);
-    Serial1.printf("x2.val=%d.3", data[2]);
+    Serial1.printf("x2.val=%d", data[2]);
     Serial1.write(ff, 3);
 }
 
@@ -50,22 +50,39 @@ KeyDown ULCD::GetKeyDown()
 {
     return NowKeyDown;
 }
-void ULCD::SetIn(OnSet data)
+void ULCD::SetIn(OnSet data_)
 {
-    Serial1.print("t0.txt=");
-    Serial1.write(data.Data, data.StringLength);
+    for (uint8_t i = 0; i < data_.StringLength + (data_.PointLocal > 0 ? 1 : 0); i++)
+    {
+        if (data_.PointLocal != 0)
+        {
+            if (i < data_.PointLocal)
+                data[i] = data_.Data[i] + 0x30;
+            else if (i == data_.PointLocal)
+                data[i] = '.';
+            else if (i >= data_.PointLocal)
+                data[i] = data_.Data[i - 1] + 0x30;
+        }
+        else
+        {
+            data[i] = data_.Data[i] + 0x30;
+        }
+    }
+    Serial1.print("t0.txt=\"");
+    Serial1.write(data, data_.StringLength + data_.PointLocal);
+    Serial1.print("\"");
     Serial1.write(ff, 3);
 }
 
 void ULCD::SetONOFF(bool on)
 {
-    Serial1.printf("bt0.val=%d.1", on);
+    Serial1.printf("bt0.val=%d", on);
     Serial1.write(ff, 3);
 }
 
-void ULCD::SetSave(uint8_t data)
+void ULCD::SetSave(uint16_t data)
 {
-    Serial1.printf("x3.val=%d.3", data);
+    Serial1.printf("x3.val=%d", data);
     Serial1.write(ff, 3);
 }
 
@@ -97,7 +114,7 @@ void ULCD::SetBit(uint8_t pos)
 
 void ULCD::Tick()
 {
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 4; i++)
     {
         buff[i] = Serial1.read();
     }
@@ -193,5 +210,4 @@ void ULCD::Tick()
 void ULCD::clear()
 {
     NowKeyDown = NullKey;
-    buff[0] = 0xFF;
 }

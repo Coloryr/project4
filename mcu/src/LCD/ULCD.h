@@ -7,12 +7,12 @@
 class ULCD
 {
 private:
-    char buff[2] = {0xff, 0xff};
+    char buff[4] = {0xff};
     char ff[3] = {0xff, 0xff, 0xff};
+    char data[6] = {0};
     KeyDown NowKeyDown;
 
 public:
-    OnSet NowSet;
     ULCD();
 
     void clear();
@@ -22,10 +22,10 @@ public:
     void SetONOFF(bool on);
     void SetMode(bool mode);
 
-    void UpSave(uint8_t data[3]);
+    void UpSave(uint16_t data[3]);
     void SetBit(uint8_t pos);
     void SetPage(uint8_t page);
-    void SetSave(uint8_t data);
+    void SetSave(uint16_t data);
 
     void UpDate(VI vi);
     void UpSet(VI vi);

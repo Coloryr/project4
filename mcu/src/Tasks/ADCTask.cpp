@@ -12,7 +12,6 @@ void TaskADC(void *pvParameters)
     xLastWakeTime = xTaskGetTickCount();
     for (;;)
     {
-        
         AD_ADC.getI(&VaI.NowI);
         AD_ADC.getV(&VaI.NowV);
 

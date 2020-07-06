@@ -10,9 +10,11 @@
 #include <AD/ADC.h>
 #include <AD/DAC.h>
 #include <DataSave/Data.h>
+#include <Bilnk.h>
 
 VI VaI;
 Now NowData;
+OnSet NowSet;
 
 uint16_t VSave[3];
 uint16_t ISave[3];
@@ -59,6 +61,7 @@ void init()
     NowData.error = 0;
     NowData.open = false;
     NowData.page = 0;
+    NowData.now =0;
 
     SaveData.GetData(&VaI);
 
@@ -73,13 +76,14 @@ void setup()
     SaveData.begin();
     AD_ADC.begin();
     AD_DAC.begin();
-    LCD.SetPage(0);
 
     init();
 
     TaskStart();
-    vTaskStartScheduler();
+    LCD.SetPage(0);
     Serial.printf("hello world");
+    vTaskStartScheduler();
+    
 }
 
 void loop()

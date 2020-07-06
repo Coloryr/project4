@@ -25,19 +25,20 @@ struct VI
 
 struct Now
 {
+    uint16_t now = 0;
     uint8_t mode = 0;
     uint8_t page = 0;
     uint8_t error = 0;
+    uint8_t bit = 0;
     bool open = false;
 };
 
 struct OnSet
 {
-    bool mode = false;
+    uint8_t mode = false;
     uint8_t PointLocal = 0;
     uint8_t StringLength = 0;
-    uint8_t Val = 0;
-    char Data[6] = {0};
+    char Data[5] = {0};
 };
 
 enum Mode
@@ -72,13 +73,13 @@ enum KeyDown
     Last,
     Next,
     Down,
-    //预设 保存1-3 删除1-3
+    //预设 保存1-3 加载1-3
     Save1,
     Save2,
     Save3,
-    Delete1,
-    Delete2,
-    Delete3,
+    Load1,
+    Load2,
+    Load3,
     //功能选择
     Mode1,
     Mode2,

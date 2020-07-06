@@ -23,12 +23,13 @@ void DataSave::begin()
     w25qxx_read_id(&temp, &temp1);
     Serial.printf("ID:0x%02x%02x\n", temp, temp1);
     uint8_t *data = (uint8_t *)malloc(32 * sizeof(uint8_t));
-    w25qxx_read_data(0x40, data, 32);
+    w25qxx_read_data(0x50, data, 32);
 
     if (data[1] != write_buff[1])
     {
         Serial.println("init");
-        w25qxx_write_data(0x40, write_buff, 32);
+        w25qxx_write_data(0x50, write_buff, 32);
+        w25qxx_write_data(0x00, read_buff, 32);
     }
     else
     {
