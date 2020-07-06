@@ -62,22 +62,18 @@ void Key::KeyScan()
     if (digitalRead(K1) == LOW)
     {
         NowKeyDown = Number1;
-        return;
     }
     else if (digitalRead(K2) == LOW)
     {
         NowKeyDown = Number2;
-        return;
     }
     else if (digitalRead(K3) == LOW)
     {
         NowKeyDown = Number3;
-        return;
     }
     else if (digitalRead(K4) == LOW)
     {
         NowKeyDown = Backspace;
-        return;
     }
     digitalWrite(KA, HIGH);
     digitalWrite(KB, LOW);
@@ -85,22 +81,18 @@ void Key::KeyScan()
     if (digitalRead(K1) == LOW)
     {
         NowKeyDown = Number4;
-        return;
     }
     else if (digitalRead(K2) == LOW)
     {
         NowKeyDown = Number5;
-        return;
     }
     else if (digitalRead(K3) == LOW)
     {
         NowKeyDown = Number6;
-        return;
     }
     else if (digitalRead(K4) == LOW)
     {
         NowKeyDown = Clear;
-        return;
     }
     digitalWrite(KB, HIGH);
     digitalWrite(KC, LOW);
@@ -108,22 +100,18 @@ void Key::KeyScan()
     if (digitalRead(K1) == LOW)
     {
         NowKeyDown = Number7;
-        return;
     }
     else if (digitalRead(K2) == LOW)
     {
         NowKeyDown = Number8;
-        return;
     }
     else if (digitalRead(K3) == LOW)
     {
         NowKeyDown = Number9;
-        return;
     }
     else if (digitalRead(K4) == LOW)
     {
         NowKeyDown = SaveKey;
-        return;
     }
     digitalWrite(KC, HIGH);
     digitalWrite(KD, LOW);
@@ -131,22 +119,34 @@ void Key::KeyScan()
     if (digitalRead(K1) == LOW)
     {
         NowKeyDown = Point;
-        return;
     }
     else if (digitalRead(K2) == LOW)
     {
         NowKeyDown = Number0;
-        return;
     }
     else if (digitalRead(K3) == LOW)
     {
         NowKeyDown = Confirm;
-        return;
     }
     else if (digitalRead(K4) == LOW)
     {
         NowKeyDown = Back;
-        return;
+    }
+    while (digitalRead(K1) != HIGH)
+    {
+        vTaskDelay(200 / portTICK_RATE_MS);
+    }
+    while (digitalRead(K2) != HIGH)
+    {
+        vTaskDelay(200 / portTICK_RATE_MS);
+    }
+    while (digitalRead(K3) != HIGH)
+    {
+        vTaskDelay(200 / portTICK_RATE_MS);
+    }
+    while (digitalRead(K4) != HIGH)
+    {
+        vTaskDelay(200 / portTICK_RATE_MS);
     }
 }
 
@@ -157,34 +157,34 @@ void Key::SpanScan()
     int BA_now = digitalRead(BA);
     if (B1_now != B1_Last)
     {
-        if (B1_now == GPIO_PV_HIGH)
+        if (B1_now == HIGH)
         {
-            if ((B1_Last == GPIO_PV_HIGH) && (B2_now == GPIO_PV_LOW))
+            if ((B1_Last == HIGH) && (B2_now == LOW))
                 SpanDown = Next;
-            else if ((B1_Last == GPIO_PV_LOW) && (B2_now == GPIO_PV_HIGH))
+            else if ((B1_Last == LOW) && (B2_now == HIGH))
                 SpanDown = Last;
-            else if ((B2_Last == B2_now) && (B2_now == GPIO_PV_LOW))
+            else if ((B2_Last == B2_now) && (B2_now == LOW))
                 SpanDown = Next;
-            else if ((B2_Last == B2_now) && (B2_now == GPIO_PV_HIGH))
+            else if ((B2_Last == B2_now) && (B2_now == HIGH))
                 SpanDown = Last;
         }
         else
         {
-            if ((B2_Last == GPIO_PV_HIGH) && (B2_now == GPIO_PV_LOW))
+            if ((B2_Last == HIGH) && (B2_now == LOW))
                 SpanDown = Last;
-            else if ((B2_Last == GPIO_PV_LOW) && (B2_now == GPIO_PV_HIGH))
+            else if ((B2_Last == LOW) && (B2_now == HIGH))
                 SpanDown = Next;
-            else if ((B2_Last == B2_now) && (B2_now == GPIO_PV_LOW))
+            else if ((B2_Last == B2_now) && (B2_now == LOW))
                 SpanDown = Last;
-            else if ((B2_Last == B2_now) && (B2_now == GPIO_PV_HIGH))
+            else if ((B2_Last == B2_now) && (B2_now == HIGH))
                 SpanDown = Next;
         }
         B1_Last = B1_now;
         B2_Last = B2_now;
     }
-    else if (BA_now == GPIO_PV_LOW)
+    else if (BA_now == LOW)
     {
-        while (BA_now != GPIO_PV_HIGH)
+        while (BA_now != HIGH)
         {
             vTaskDelay(200 / portTICK_RATE_MS);
             BA_now = digitalRead(BA);
