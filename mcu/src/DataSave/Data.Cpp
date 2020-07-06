@@ -39,82 +39,74 @@ void DataSave::begin()
 
 void DataSave::Save()
 {
-    uint8_t *data = (uint8_t *)malloc(4 * 6 * sizeof(uint8_t));
+    uint8_t *data = (uint8_t *)malloc(2 * 6 * sizeof(uint8_t));
     DataTran tran;
     for (uint8_t i = 0; i < 3; i++)
     {
-        tran.f = VSave[i];
-        data[i * 4] = tran.u[0];
-        data[i * 4 + 1] = tran.u[1];
-        data[i * 4 + 2] = tran.u[2];
-        data[i * 4 + 3] = tran.u[3];
+        tran.u16 = VSave[i];
+        data[i * 2] = tran.u8[0];
+        data[i * 2 + 1] = tran.u8[1];
     }
     for (uint8_t i = 0; i < 3; i++)
     {
-        tran.f = ISave[i];
-        data[i * 4 + 12] = tran.u[0];
-        data[i * 4 + 13] = tran.u[1];
-        data[i * 4 + 14] = tran.u[2];
-        data[i * 4 + 15] = tran.u[3];
+        tran.u16 = ISave[i];
+        data[i * 2 + 6] = tran.u8[0];
+        data[i * 2 + 6] = tran.u8[1];
     }
-    w25qxx_write_data(0x0a, data, 24);
+    w25qxx_write_data(0x0a, data, 12);
     free(data);
 }
 void DataSave::Read()
 {
-    uint8_t *data = (uint8_t *)malloc(4 * 6 * sizeof(uint8_t));
-    w25qxx_read_data(0x0a, data, 24);
+    uint8_t *data = (uint8_t *)malloc(2 * 6 * sizeof(uint8_t));
+    w25qxx_read_data(0x0a, data, 12);
     DataTran tran;
     for (uint8_t i = 0; i < 3; i++)
     {
-        tran.u[0] = data[i * 4];
-        tran.u[1] = data[i * 4 + 1];
-        tran.u[2] = data[i * 4 + 2];
-        tran.u[3] = data[i * 4 + 3];
-        VSave[i] = tran.f;
+        tran.u8[0] = data[i * 2];
+        tran.u8[1] = data[i * 2 + 1];
+        VSave[i] = tran.u16;
     }
     for (uint8_t i = 0; i < 3; i++)
     {
-        tran.u[0] = data[i * 4 + 12];
-        tran.u[1] = data[i * 4 + 13];
-        tran.u[2] = data[i * 4 + 14];
-        tran.u[3] = data[i * 4 + 15];
-        ISave[i] = tran.f;
+        tran.u8[0] = data[i * 2 + 6];
+        tran.u8[1] = data[i * 2 + 6];
+        ISave[i] = tran.u16;
     }
 }
 
-void DataSave::SaveData(VI data)
+void DataSave::SaveData(VI *data)
 {
-    uint8_t *a = (uint8_t *)malloc(8 * sizeof(uint8_t));
+    uint8_t *a = (uint8_t *)malloc(4 * sizeof(uint8_t));
     DataTran tran;
-    tran.f = data.SetV;
-    for (int i = 0; i < 4; i++)
+    tran.u16 = data->SetV;
+    for (int i = 0; i < 2; i++)
     {
-        a[i] = tran.u[i];
+        a[i] = tran.u8[i];
     }
-    tran.f = data.SetI;
-    for (int i = 0; i < 4; i++)
+    tran.u16 = data->SetI;
+    for (int i = 0; i < 2; i++)
     {
-        a[i + 4] = tran.u[i];
+        a[i + 2] = tran.u8[i];
     }
-    w25qxx_write_data(0x00, a, 8);
+    w25qxx_write_data(0x00, a, 4);
     free(a);
 }
 void DataSave::GetData(VI *data)
 {
-    uint8_t *a = (uint8_t *)malloc(8 * sizeof(uint8_t));
-    w25qxx_read_data(0x00, a, 8);
+    uint8_t *a = (uint8_t *)malloc(4 * sizeof(uint8_t));
+    w25qxx_read_data(0x00, a, 4);
     DataTran tran;
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 2; i++)
     {
-        tran.u[i] = a[i];
+        tran.u8[i] = a[i];
     }
-    data->SetV = tran.f;
-    for (int i = 0; i < 4; i++)
+    data->SetV = tran.u16;
+    for (int i = 0; i < 2; i++)
     {
-        tran.u[i] = a[i + 4];
+        tran.u8[i] = a[i + 2];
     }
-    data->SetV = tran.f;
+    data->SetV = tran.u16;
     free(a);
 }
 

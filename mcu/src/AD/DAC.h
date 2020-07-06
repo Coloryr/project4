@@ -17,8 +17,8 @@ private:
 public:
     DAC();
     void begin();
-    void SetV(float data);
-    void SetI(float data);
+    void SetV(uint16_t data);
+    void SetI(uint16_t data);
 };
 
 extern class DAC AD_DAC;

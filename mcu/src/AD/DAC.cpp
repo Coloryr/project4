@@ -2,7 +2,6 @@
 #include <AD/DAC.h>
 #include <DataS.h>
 #include <IO.h>
-#include <../../libraries/SPI/src/SPI.h>
 
 DAC AD_DAC;
 
@@ -38,7 +37,7 @@ void DAC::begin()
                 _register1 = 0;
 }
 
-void DAC::SetV(float data)
+void DAC::SetV(uint16_t data)
 {
     _value = data * V_x;
     digitalWrite(DAC_V_CS, LOW);
@@ -48,7 +47,7 @@ void DAC::SetV(float data)
     digitalWrite(DAC_V_CS, HIGH);
 }
 
-void DAC::SetI(float data)
+void DAC::SetI(uint16_t data)
 {
     _value1 = data * I_x;
     digitalWrite(DAC_I_CS, LOW);

@@ -15,7 +15,7 @@ void TaskTick(void *pvParameters)
     for (;;)
     {
         KeyBoard.KeyScan();
-        switch (NowData->page)
+        switch (NowData.page)
         {
         case 0:
             switch (LCD.GetKeyDown())
@@ -24,15 +24,29 @@ void TaskTick(void *pvParameters)
                 /* code */
                 break;
             case Menu2:
-                NowData->page = 1;
-                NowData->mode = LCD.NowSet.mode;
-                LCD.SetMode(NowData->mode == 0 ? true : false);
+                NowData.page = 1;
+                LCD.NowSet.mode = NowData.mode;
+                LCD.NowSet.PointLocal = 0;
+                LCD.NowSet.StringLength = 0;
+                LCD.NowSet.Val = 0;
+                LCD.SetMode(NowData.mode == 0 ? true : false);
                 break;
-
             case Menu3:
-                NowData->page = 2;
-                NowData->mode = LCD.NowSet.mode;
-                LCD.SetSave(NowData->mode == 0 ? VaI->SetV : VaI->SetI);
+                NowData.page = 2;
+                LCD.NowSet.mode = NowData.mode;
+                LCD.SetSave(NowData.mode == 0 ? VaI.SetV : VaI.SetI);
+                break;
+            case Mode1:
+                NowData.mode = 0;
+                break;
+            case Mode2:
+                NowData.mode = 1;
+                break;
+            case SetOFF:
+                NowData.open = false;
+                break;
+            case SetON:
+                NowData.open = true;
                 break;
             default:
                 break;
@@ -40,7 +54,6 @@ void TaskTick(void *pvParameters)
             switch (KeyBoard.GetKey())
             {
             case Number1:
-                /* code */
                 break;
             default:
                 break;

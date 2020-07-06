@@ -13,8 +13,8 @@ private:
 public:
     DataSave();
     void begin();
-    void SaveData(VI data);
-    void GetData(VI *data);
+    void SaveData(VI* data);
+    void GetData(VI* data);
     void Save();
     void Read();
     void Clear();

@@ -5,28 +5,22 @@
 
 union DataTran1
 {
-    uint8_t u8[2];
-    uint16_t u16;
-};
-
-union DataTran2
-{
     uint32_t u32;
-    float f;
+    uint16_t u16[2];
 };
 
 union DataTran
 {
-    float f;
-    uint8_t u[4];
+    uint16_t u16;
+    uint8_t u8[2];
 };
 
 struct VI
 {
-    float SetV = 0;
-    float SetI = 0;
-    float NowV = 0;
-    float NowI = 0;
+    uint16_t SetV = 0;
+    uint16_t SetI = 0;
+    uint16_t NowV = 0;
+    uint16_t NowI = 0;
 };
 
 struct Now
@@ -39,11 +33,11 @@ struct Now
 
 struct OnSet
 {
-    bool mode;
-    uint8_t PointLocal;
-    uint8_t StringLength;
-    float Val;
-    char Data[6];
+    bool mode = false;
+    uint8_t PointLocal = 0;
+    uint8_t StringLength = 0;
+    uint8_t Val = 0;
+    char Data[6] = {0};
 };
 
 enum Mode
@@ -72,6 +66,7 @@ enum KeyDown
     Number8,
     Number9,
     Number0,
+    Number00,
     Point,
     //编码轮 左右中
     Last,
@@ -97,10 +92,11 @@ enum KeyDown
     Back,
     Confirm,
     SaveKey,
-    NullKey,
     //打开电源，关闭电源
-    ON,
-    OFF
+    SetON,
+    SetOFF,
+    //空按键
+    NullKey
 };
 
 #endif

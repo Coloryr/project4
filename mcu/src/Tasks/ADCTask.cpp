@@ -13,8 +13,8 @@ void TaskADC(void *pvParameters)
     for (;;)
     {
         
-        AD_ADC.getI(&VaI->NowI);
-        AD_ADC.getV(&VaI->NowV);
+        AD_ADC.getI(&VaI.NowI);
+        AD_ADC.getV(&VaI.NowV);
 
         // 使用当前时间初始化变量xLastWakeTime ,注意这和vTaskDelay()函数不同
 

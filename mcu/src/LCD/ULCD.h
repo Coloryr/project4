@@ -7,23 +7,32 @@
 class ULCD
 {
 private:
-    char buff[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    KeyDown NowKeyDown;
+    char buff[2] = {0xff, 0xff};
     char ff[3] = {0xff, 0xff, 0xff};
+    KeyDown NowKeyDown;
 
 public:
     OnSet NowSet;
     ULCD();
+
     void clear();
     void begin();
-    void SetON(bool on);
-    void SetMode(bool mode);
-    void SetPage(uint8_t page);
-    void UpDate(VI vi);
-    void SetSave(float data);
-    KeyDown GetKeyDown();
-    void SetIn(OnSet data);
     void Tick();
+
+    void SetONOFF(bool on);
+    void SetMode(bool mode);
+
+    void UpSave(uint8_t data[3]);
+    void SetBit(uint8_t pos);
+    void SetPage(uint8_t page);
+    void SetSave(uint8_t data);
+
+    void UpDate(VI vi);
+    void UpSet(VI vi);
+
+    KeyDown GetKeyDown();
+
+    void SetIn(OnSet data);
 };
 
 extern class ULCD LCD;

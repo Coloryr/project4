@@ -29,7 +29,7 @@ void ADC::begin()
     pinMode(ADC_I_SCK, OUTPUT);
 }
 
-void ADC::getV(float *data)
+void ADC::getV(uint16_t *data)
 {
     uint32_t value = 0;
     for (int i = 0; i < 24; ++i)
@@ -41,12 +41,10 @@ void ADC::getV(float *data)
     TickV();
     TickV();
     TickV();
-    DataTran2 tran;
-    tran.u32 = value;
 
-    data[0] = (float)tran.f * V_x;
+    data[0] = (uint16_t)value * V_x;
 }
-void ADC::getI(float *data)
+void ADC::getI(uint16_t *data)
 {
     uint32_t value = 0;
     for (int i = 0; i < 24; ++i)
@@ -58,8 +56,6 @@ void ADC::getI(float *data)
     TickI();
     TickI();
     TickI();
-    DataTran2 tran;
-    tran.u32 = value;
 
-    data[0] = (float)tran.f * V_x;
+    data[0] = (uint16_t)value * V_x;
 }

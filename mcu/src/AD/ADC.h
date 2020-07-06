@@ -4,16 +4,16 @@
 class ADC
 {
 private:
-    double V_x = 1;
-    double I_x = 1;
+    float V_x = 1;
+    float I_x = 1;
     void TickV();
     void TickI();
 
 public:
     ADC();
     void begin();
-    void getV(float *data);
-    void getI(float *data);
+    void getV(uint16_t *data);
+    void getI(uint16_t *data);
 };
 
 extern class ADC AD_ADC;

@@ -11,11 +11,11 @@
 #include <AD/DAC.h>
 #include <DataSave/Data.h>
 
-VI *VaI;
-Now *NowData;
+VI VaI;
+Now NowData;
 
-float VSave[3];
-float ISave[3];
+uint16_t VSave[3];
+uint16_t ISave[3];
 
 void TaskStart()
 {
@@ -55,18 +55,15 @@ void TaskStart()
 
 void init()
 {
-    VaI = (VI *)malloc(sizeof(VI));
-    NowData = (Now *)malloc(sizeof(Now));
+    NowData.mode = 0;
+    NowData.error = 0;
+    NowData.open = false;
+    NowData.page = 0;
 
-    NowData->mode = 0;
-    NowData->error = 0;
-    NowData->open = false;
-    NowData->page = 0;
+    SaveData.GetData(&VaI);
 
-    SaveData.GetData(VaI);
-
-    VaI->NowI = 0;
-    VaI->NowV = 0;
+    VaI.NowI = 0;
+    VaI.NowV = 0;
 }
 
 void setup()

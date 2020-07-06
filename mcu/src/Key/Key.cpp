@@ -12,6 +12,18 @@ Key KeyBoard;
  7 8 9 Save
  . 0 确认 Back
 */
+/*
+ x x x ON
+ x x x OFF
+ x x x Menu
+ x x Save Set
+*/
+/*
+ L1 L2 L3 x
+ S1 S2 S3 x
+ x x x x
+ x x x Back
+*/
 
 Key::Key()
 {
