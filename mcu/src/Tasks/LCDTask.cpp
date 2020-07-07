@@ -15,6 +15,7 @@ void TaskLCD(void *pvParameters)
         LCD.Tick();
         if (NowData.page == 0)
         {
+            LCD.UpSet(VaI);
             LCD.UpDate(VaI);
         }
         else if (NowData.page == 2)

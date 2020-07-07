@@ -107,7 +107,12 @@ void DataSave::GetData(VI *data)
     {
         tran.u8[i] = a[i + 2];
     }
-    data->SetV = tran.u16;
+    data->SetI = tran.u16;
+    if (data->SetV > 20000 || data->SetI > 2000)
+    {
+        data->SetV = data->SetI = 0;
+        Clear();
+    }
     free(a);
 }
 

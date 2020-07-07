@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Tasks/TickTask.h>
+#include <AD/DAC.h>
 #include <Bell/Bell.h>
 #include <FreeRTOS.h>
 #include <task.h>
@@ -136,6 +137,44 @@ void Clear_()
     LCD.SetIn(NowSet);
 }
 
+void ConfirmSet()
+{
+    double data = 0;
+    switch (NowSet.StringLength)
+    {
+    case 1:
+        data += NowSet.Data[0];
+        break;
+    case 2:
+        data += NowSet.Data[0] * 10 + NowSet.Data[1];
+        break;
+    case 3:
+        data += NowSet.Data[0] * 100 + NowSet.Data[1] * 10 + NowSet.Data[2];
+        break;
+    case 4:
+        data += NowSet.Data[0] * 1000 + NowSet.Data[1] * 100 + NowSet.Data[2] * 10 + NowSet.Data[3];
+        break;
+    case 5:
+        data += NowSet.Data[0] * 10000 + NowSet.Data[1] * 1000 + NowSet.Data[2] * 100 + NowSet.Data[3] * 10 + NowSet.Data[4];
+        break;
+    }
+    if (NowSet.PointLocal != 0)
+    {
+        data = data / pow(10, NowSet.StringLength - NowSet.PointLocal);
+    }
+    data = data * 1000;
+    if (NowSet.mode == 0)
+    {
+        VaI.SetV = data;
+        AD_DAC.SetV(VaI.SetV);
+    }
+    else
+    {
+        VaI.SetI = data;
+        AD_DAC.SetI(VaI.SetI);
+    }
+}
+
 void TaskTick(void *pvParameters)
 {
     Serial.println("Task Tick");
@@ -257,6 +296,17 @@ void TaskTick(void *pvParameters)
                 break;
             case Clear:
                 Clear_();
+                break;
+            case Confirm:
+                ConfirmSet();
+                NowData.page = 0;
+                NowSet.mode = NowData.mode = 0;
+                NowSet.PointLocal = 0;
+                NowSet.StringLength = 0;
+                NowData.now = 0;
+                NowData.bit = 0;
+                NowSet.Data[0] = NowSet.Data[1] = NowSet.Data[2] = NowSet.Data[3] = NowSet.Data[4] = 0;
+                LCD.SetPage(NowData.page);
                 break;
             default:
                 break;
