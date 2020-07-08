@@ -11,6 +11,7 @@
 #include <AD/DAC.h>
 #include <DataSave/Data.h>
 #include <Bilnk.h>
+#include <IO.h>
 
 VI VaI;
 Now NowData;
@@ -62,6 +63,12 @@ void init()
     NowData.open = false;
     NowData.page = 0;
     NowData.now =0;
+
+    pinMode(ON, OUTPUT);
+    pinMode(CUT, OUTPUT);
+    pinMode(SWI, OUTPUT);
+
+    digitalWrite(SWI, LOW);
 
     SaveData.GetData(&VaI);
 

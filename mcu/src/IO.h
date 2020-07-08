@@ -35,5 +35,6 @@
 
 #define ON 31
 #define CUT 32
+#define SWI 33
 
 #endif

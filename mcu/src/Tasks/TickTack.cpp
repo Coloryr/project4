@@ -8,6 +8,7 @@
 #include <Key/Key.h>
 #include <DataS.h>
 #include <Bilnk.h>
+#include <IO.h>
 
 bool Cu()
 {
@@ -182,6 +183,25 @@ void TaskTick(void *pvParameters)
     xLastWakeTime = xTaskGetTickCount();
     for (;;)
     {
+        digitalWrite(ON, NowData.open);
+        if (VaI.SetV >= 16000)
+        {
+            digitalWrite(SWI, LOW);
+        }
+        else
+        {
+            digitalWrite(SWI, HIGH);
+        }
+        if (VaI.NowV >= 20500 && VaI.NowI >= 2200)
+        {
+            digitalWrite(CUT, LOW);
+            NowData.open = false;
+        }
+        else
+        {
+            digitalWrite(CUT, HIGH);
+        }
+
         KeyBoard.KeyScan();
         switch (NowData.page)
         {
@@ -231,6 +251,102 @@ void TaskTick(void *pvParameters)
             switch (KeyBoard.GetSpan())
             {
             case Next:
+                if (NowData.mode == 0)
+                {
+                    switch (NowData.bit)
+                    {
+                    case 0:
+                        if (VaI.SetV + 1 <= 20000)
+                            VaI.SetV++;
+                        break;
+                    case 1:
+                        if (VaI.SetV + 10 <= 20000)
+                            VaI.SetV += 10;
+                        break;
+                    case 2:
+                        if (VaI.SetV + 100 <= 20000)
+                            VaI.SetV += 100;
+                        break;
+                    case 3:
+                        if (VaI.SetV + 1000 <= 20000)
+                            VaI.SetV += 1000;
+                        break;
+                    }
+                    AD_DAC.SetV(VaI.SetV);
+                }
+                else
+                {
+                    switch (NowData.bit)
+                    {
+                    case 0:
+
+                        if (VaI.SetI + 1 <= 2000)
+                            VaI.SetI++;
+                        break;
+                    case 1:
+                        if (VaI.SetI + 10 <= 2000)
+                            VaI.SetI += 10;
+                        break;
+                    case 2:
+                        if (VaI.SetI + 100 <= 2000)
+                            VaI.SetI += 100;
+                        break;
+                    case 3:
+                        if (VaI.SetI + 1000 >= 2000)
+                            VaI.SetI += 1000;
+                        break;
+                    }
+                    AD_DAC.SetI(VaI.SetI);
+                }
+
+                break;
+            case Last:
+                if (NowData.mode == 0)
+                {
+                    switch (NowData.bit)
+                    {
+                    case 0:
+                        if (VaI.SetV - 1 >= 0)
+                            VaI.SetV--;
+                        break;
+                    case 1:
+                        if (VaI.SetV - 10 >= 0)
+                            VaI.SetV -= 10;
+                        break;
+                    case 2:
+                        if (VaI.SetV - 100 >= 0)
+                            VaI.SetV -= 100;
+                        break;
+                    case 3:
+                        if (VaI.SetV - 1000 >= 0)
+                            VaI.SetV -= 1000;
+                        break;
+                    }
+                    AD_DAC.SetV(VaI.SetV);
+                }
+                else
+                {
+                    switch (NowData.bit)
+                    {
+                    case 0:
+                        if (VaI.SetI - 1 >= 0)
+                            VaI.SetI--;
+                        break;
+                    case 1:
+                        if (VaI.SetI - 10 >= 0)
+                            VaI.SetI -= 10;
+                        break;
+                    case 2:
+                        if (VaI.SetI - 100 >= 0)
+                            VaI.SetI -= 100;
+                        break;
+                    case 3:
+                        if (VaI.SetI - 1000 >= 0)
+                            VaI.SetI -= 1000;
+                        break;
+                    }
+                    AD_DAC.SetI(VaI.SetI);
+                }
                 break;
             case Down:
                 NowData.bit++;
