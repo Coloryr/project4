@@ -15,15 +15,15 @@
 #define KD 15
 #define K1 19
 #define K2 20
-#define K3 21
-#define K4 22
+#define K3 20
+#define K4 20
 
 #define B1 17
 #define B2 18
 #define BA 16
 
-#define DAC_MISO 23
-#define DAC_SCK 24
+#define DAC_MISO 21
+#define DAC_SCK 22
 #define DAC_I_CS 25
 #define DAC_V_CS 26
 

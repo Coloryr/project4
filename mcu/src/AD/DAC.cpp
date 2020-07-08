@@ -39,7 +39,9 @@ void DAC::begin()
 
 void DAC::SetV(uint16_t data)
 {
+    
     _value = data * V_x;
+    Serial.printf("data:%d ", _value);
     digitalWrite(DAC_V_CS, LOW);
     Write(_register);
     Write(_value >> 8);

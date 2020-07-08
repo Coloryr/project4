@@ -69,6 +69,7 @@ void init()
     pinMode(SWI, OUTPUT);
 
     digitalWrite(SWI, LOW);
+    digitalWrite(ON, LOW);
 
     SaveData.GetData(&VaI);
 
