@@ -15,6 +15,7 @@ void DAC::Write(uint8_t data)
     {
         digitalWrite(DAC_MISO, (data & mask) != 0);
         digitalWrite(DAC_SCK, HIGH);
+        delayMicroseconds(4);
         digitalWrite(DAC_SCK, LOW);
     }
 }

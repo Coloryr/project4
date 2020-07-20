@@ -12,14 +12,14 @@ ADC::ADC()
 void ADC::TickV()
 {
     digitalWrite(ADC_V_SCK, LOW);
-    delayMicroseconds(2);
+    delayMicroseconds(4);
     digitalWrite(ADC_V_SCK, HIGH);
 }
 
 void ADC::TickI()
 {
     digitalWrite(ADC_I_SCK, LOW);
-    delayMicroseconds(2);
+    delayMicroseconds(4);
     digitalWrite(ADC_I_SCK, HIGH);
 }
 void ADC::begin()
@@ -27,6 +27,8 @@ void ADC::begin()
     pinMode(ADC_MISO, INPUT_PULLUP);
     pinMode(ADC_V_SCK, OUTPUT);
     pinMode(ADC_I_SCK, OUTPUT);
+    digitalWrite(ADC_V_SCK, HIGH);
+    digitalWrite(ADC_I_SCK, HIGH);
 }
 
 void ADC::getV(uint16_t *data)
