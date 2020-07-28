@@ -38,23 +38,6 @@ PrefsVaultGUID=
 PrefsRevisionGUID=
 
 [Document1]
-DocumentPath=F:\下载\AD元件库\元件库\元件库\三维PCB封装库\电容.PcbLib
-AnnotationEnabled=1
-AnnotateStartValue=1
-AnnotationIndexControlEnabled=0
-AnnotateSuffix=
-AnnotateScope=All
-AnnotateOrder=-1
-DoLibraryUpdate=1
-DoDatabaseUpdate=1
-ClassGenCCAutoEnabled=1
-ClassGenCCAutoRoomEnabled=1
-ClassGenNCAutoScope=None
-DItemRevisionGUID=
-GenerateClassCluster=0
-DocumentUniqueId=UHHYYYDN
-
-[Document2]
 DocumentPath=..\..\..\原理图库\原理图库.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -70,6 +53,23 @@ ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=LWRHGNMB
+
+[Document2]
+DocumentPath=F:\下载\AD元件库\元件库\元件库\三维PCB封装库\电容.PcbLib
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=UHHYYYDN
 
 [Document3]
 DocumentPath=..\..\..\PCB库\芯片封装.PcbLib
@@ -173,19 +173,40 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=PESCBTXV
 
+[Document9]
+DocumentPath=功率板.PcbDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=GDNJDMFL
+
 [GeneratedDocument1]
-DocumentPath=Project Outputs for 2020年电赛校赛\模拟控制板.EXTREP
+DocumentPath=Project Outputs for 2020年电赛校赛\Net Status - 2020年电赛校赛.html
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=Project Outputs for 2020年电赛校赛\模拟控制板.GTL
+DocumentPath=Project Outputs for 2020年电赛校赛\模拟控制板.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument3]
-DocumentPath=Project Outputs for 2020年电赛校赛\模拟控制板.REP
+DocumentPath=Project Outputs for 2020年电赛校赛\模拟控制板.GTL
 DItemRevisionGUID=
 
 [GeneratedDocument4]
+DocumentPath=Project Outputs for 2020年电赛校赛\模拟控制板.REP
+DItemRevisionGUID=
+
+[GeneratedDocument5]
 DocumentPath=Project Outputs for 2020年电赛校赛\模拟控制板.RUL
 DItemRevisionGUID=
 
@@ -347,7 +368,7 @@ OutputDefault20=0
 [OutputGroup2]
 Name=Simulator Outputs
 Description=
-TargetPrinter=Microsoft Print to PDF
+TargetPrinter=Brother HL-2260 Printer
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 
 [OutputGroup3]
@@ -364,7 +385,7 @@ PageOptions1=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintS
 Configuration1_Name1=OutputConfigurationParameter1
 Configuration1_Item1=DesignatorDisplayMode=Physical|PrintArea=DesignExtent|PrintAreaLowerLeftCornerX=0|PrintAreaLowerLeftCornerY=0|PrintAreaUpperRightCornerX=0|PrintAreaUpperRightCornerY=0|Record=PcbPrintView
 Configuration1_Name2=OutputConfigurationParameter2
-Configuration1_Item2=IncludeBoardCutouts=False|IncludeBottomLayerComponents=True|IncludeMultiLayerComponents=True|IncludeTopLayerComponents=True|IncludeViewports=True|Index=0|Mirror=True|Name=Multilayer Composite Print|PadNumberFontSize=14|Record=PcbPrintOut|ShowHoles=False|ShowPadNets=False|ShowPadNumbers=False|SubstituteFonts=False
+Configuration1_Item2=IncludeBoardCutouts=False|IncludeBottomLayerComponents=True|IncludeMultiLayerComponents=True|IncludeTopLayerComponents=True|IncludeViewports=True|Index=0|Mirror=True|Name=Multilayer Composite Print|PadNumberFontSize=14|Record=PcbPrintOut|ShowHoles=True|ShowPadNets=False|ShowPadNumbers=False|SubstituteFonts=False
 Configuration1_Name3=OutputConfigurationParameter3
 Configuration1_Item3=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|DrillType=Regular|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=TopLayer|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer
 OutputType2=PCB 3D Print
@@ -541,6 +562,18 @@ OutputDocumentPath1=
 OutputVariantName1=[No Variations]
 OutputDefault1=0
 PageOptions1=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4|PaperIndex=9
+Configuration1_Name1=ColumnNameFormat
+Configuration1_Item1=CaptionAsName
+Configuration1_Name2=ForceUpdateSettings
+Configuration1_Item2=False
+Configuration1_Name3=General
+Configuration1_Item3=OpenExported=False|AddToProject=False|ReportBOMViolationsInMessages=False|ForceFit=False|NotFitted=False|Database=False|DatabasePriority=False|IncludePcbData=False|IncludeVaultData=False|IncludeCloudData=False|IncludeDocumentData=True|IncludeAlternatives=False|ShowExportOptions=True|TemplateFilename=|TemplateVaultGuid=|TemplateRevisionGuid=|BatchMode=5|FormWidth=1200|FormHeight=710|SupplierProdQty=1|SupplierAutoQty=False|SupplierUseCachedPricing=False|SupplierCurrency=USD|SolutionsPerItem=1|SuppliersPerSolution=1|ViewType=0|UseDirectApi=False|BomSetName=
+Configuration1_Name4=GroupOrder
+Configuration1_Item4=Comment=True|Footprint=True
+Configuration1_Name5=SortOrder
+Configuration1_Item5=Designator=Up|Comment=Up|Footprint=Up
+Configuration1_Name6=VisibleOrder
+Configuration1_Item6=Comment=120|Description=120|Designator=120|Footprint=120|LibRef=120|Quantity=120
 OutputType2=ComponentCrossReference
 OutputName2=Component Cross Reference Report
 OutputDocumentPath2=
@@ -1223,6 +1256,114 @@ SelectedOnly=0
 UpdateVariants=1
 UpdateToLatestRevision=1
 PartTypes=0
+ComponentLibIdentifierKind0=Library Name And Type
+ComponentLibraryIdentifier0=Lib.SchLib
+ComponentDesignItemID0=DAC8551
+ComponentSymbolReference0=DAC8551
+ComponentUpdate0=1
+ComponentIsDeviceSheet0=0
+ComponentLibIdentifierKind1=Library Name And Type
+ComponentLibraryIdentifier1=Lib.SchLib
+ComponentDesignItemID1=TM7711
+ComponentSymbolReference1=TM7711
+ComponentUpdate1=1
+ComponentIsDeviceSheet1=0
+ComponentLibIdentifierKind2=Library Name And Type
+ComponentLibraryIdentifier2=Miscellaneous Connectors.IntLib
+ComponentDesignItemID2=Header 2
+ComponentSymbolReference2=Header 2
+ComponentUpdate2=1
+ComponentIsDeviceSheet2=0
+ComponentLibIdentifierKind3=Library Name And Type
+ComponentLibraryIdentifier3=Miscellaneous Connectors.IntLib
+ComponentDesignItemID3=Header 3
+ComponentSymbolReference3=Header 3
+ComponentUpdate3=0
+ComponentIsDeviceSheet3=0
+ComponentLibIdentifierKind4=Library Name And Type
+ComponentLibraryIdentifier4=Miscellaneous Connectors.IntLib
+ComponentDesignItemID4=Header 4
+ComponentSymbolReference4=Header 4
+ComponentUpdate4=0
+ComponentIsDeviceSheet4=0
+ComponentLibIdentifierKind5=Library Name And Type
+ComponentLibraryIdentifier5=原理图库.SchLib
+ComponentDesignItemID5=100uF
+ComponentSymbolReference5=100uF
+ComponentUpdate5=1
+ComponentIsDeviceSheet5=0
+ComponentLibIdentifierKind6=Library Name And Type
+ComponentLibraryIdentifier6=原理图库.SchLib
+ComponentDesignItemID6=104
+ComponentSymbolReference6=104
+ComponentUpdate6=0
+ComponentIsDeviceSheet6=0
+ComponentLibIdentifierKind7=Library Name And Type
+ComponentLibraryIdentifier7=原理图库.SchLib
+ComponentDesignItemID7=10kΩ
+ComponentSymbolReference7=10kΩ
+ComponentUpdate7=0
+ComponentIsDeviceSheet7=0
+ComponentLibIdentifierKind8=Library Name And Type
+ComponentLibraryIdentifier8=原理图库.SchLib
+ComponentDesignItemID8=470mH
+ComponentSymbolReference8=470mH
+ComponentUpdate8=0
+ComponentIsDeviceSheet8=0
+ComponentLibIdentifierKind9=Library Name And Type
+ComponentLibraryIdentifier9=原理图库.SchLib
+ComponentDesignItemID9=790?
+ComponentSymbolReference9=790?
+ComponentUpdate9=0
+ComponentIsDeviceSheet9=0
+ComponentLibIdentifierKind10=Library Name And Type
+ComponentLibraryIdentifier10=原理图库.SchLib
+ComponentDesignItemID10=ADR4533
+ComponentSymbolReference10=ADR4533
+ComponentUpdate10=0
+ComponentIsDeviceSheet10=0
+ComponentLibIdentifierKind11=Library Name And Type
+ComponentLibraryIdentifier11=原理图库.SchLib
+ComponentDesignItemID11=AMS1117-3.3
+ComponentSymbolReference11=AMS1117-3.3
+ComponentUpdate11=0
+ComponentIsDeviceSheet11=0
+ComponentLibIdentifierKind12=Library Name And Type
+ComponentLibraryIdentifier12=原理图库.SchLib
+ComponentDesignItemID12=Diode
+ComponentSymbolReference12=Diode
+ComponentUpdate12=0
+ComponentIsDeviceSheet12=0
+ComponentLibIdentifierKind13=Library Name And Type
+ComponentLibraryIdentifier13=原理图库.SchLib
+ComponentDesignItemID13=HRS1H-S-DC 6V
+ComponentSymbolReference13=HRS1H-S-DC 6V
+ComponentUpdate13=0
+ComponentIsDeviceSheet13=0
+ComponentLibIdentifierKind14=Library Name And Type
+ComponentLibraryIdentifier14=原理图库.SchLib
+ComponentDesignItemID14=NPN!
+ComponentSymbolReference14=NPN!
+ComponentUpdate14=1
+ComponentIsDeviceSheet14=0
+ComponentLibIdentifierKind15=Library Name And Type
+ComponentLibraryIdentifier15=原理图库.SchLib
+ComponentDesignItemID15=NPN
+ComponentSymbolReference15=NPN
+ComponentUpdate15=0
+ComponentIsDeviceSheet15=0
+ComponentLibIdentifierKind16=Library Name And Type
+ComponentLibraryIdentifier16=原理图库.SchLib
+ComponentDesignItemID16=OP07CP
+ComponentSymbolReference16=OP07CP
+ComponentUpdate16=1
+ComponentIsDeviceSheet16=0
+ComponentLibIdentifierKind17=Library Name And Type
+ComponentLibraryIdentifier17=原理图库.SchLib
+ComponentDesignItemID17=PNP
+ComponentSymbolReference17=PNP
+ComponentUpdate17=1
+ComponentIsDeviceSheet17=0
 FullReplace=1
 UpdateDesignatorLock=1
 UpdatePartIDLock=1
@@ -1236,6 +1377,89 @@ RemoveParameters=0
 AddModels=1
 RemoveModels=1
 UpdateCurrentModels=1
+ParameterName0=Comment
+ParameterUpdate0=1
+ParameterName1=Component Kind
+ParameterUpdate1=1
+ParameterName2=Description
+ParameterUpdate2=1
+ParameterName3=LatestRevisionDate
+ParameterUpdate3=1
+ParameterName4=LatestRevisionNote
+ParameterUpdate4=1
+ParameterName5=Library Reference
+ParameterUpdate5=1
+ParameterName6=Publisher
+ParameterUpdate6=1
+ParameterName7=Value
+ParameterUpdate7=1
+ModelTypeGroup0=PCBLIB
+ModelTypeUpdate0=1
+ModelType0=PCBLIB
+ModelName0=100mΩ康铜
+ModelUpdate0=1
+ModelType1=PCBLIB
+ModelName1=C0805
+ModelUpdate1=1
+ModelType2=PCBLIB
+ModelName2=CM F(10*10.2)
+ModelUpdate2=1
+ModelType3=PCBLIB
+ModelName3=CM G(12.5*16)
+ModelUpdate3=1
+ModelType4=PCBLIB
+ModelName4=DIP-8
+ModelUpdate4=1
+ModelType5=PCBLIB
+ModelName5=HRS1H-S-DC 6V
+ModelUpdate5=1
+ModelType6=PCBLIB
+ModelName6=KF7.62-2P
+ModelUpdate6=1
+ModelType7=PCBLIB
+ModelName7=KF7.62-3P
+ModelUpdate7=1
+ModelType8=PCBLIB
+ModelName8=LL34
+ModelUpdate8=1
+ModelType9=PCBLIB
+ModelName9=MSOP-8
+ModelUpdate9=1
+ModelType10=PCBLIB
+ModelName10=R0805
+ModelUpdate10=1
+ModelType11=PCBLIB
+ModelName11=RES-1W(立式)
+ModelUpdate11=1
+ModelType12=PCBLIB
+ModelName12=SMA(DO-214AC)
+ModelUpdate12=1
+ModelType13=PCBLIB
+ModelName13=SMC(DO-214AB)
+ModelUpdate13=1
+ModelType14=PCBLIB
+ModelName14=SOP-8(体宽3.8mm)
+ModelUpdate14=1
+ModelType15=PCBLIB
+ModelName15=SOT-23
+ModelUpdate15=1
+ModelType16=PCBLIB
+ModelName16=SOT-89
+ModelUpdate16=1
+ModelType17=PCBLIB
+ModelName17=TO-247
+ModelUpdate17=1
+ModelType18=PCBLIB
+ModelName18=TO-92
+ModelUpdate18=1
+ModelType19=PCBLIB
+ModelName19=XH2.54-4P
+ModelUpdate19=1
+ModelTypeGroup1=SI
+ModelTypeUpdate1=1
+ModelType20=SI
+ModelName20=Connector
+ModelUpdate20=1
 
 [DatabaseUpdateOptions]
 SelectedOnly=0
